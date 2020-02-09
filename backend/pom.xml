@@ -87,13 +87,6 @@
 							<resources>
 								<resource>
 									<directory>${project.parent.basedir}/frontend/dist</directory>
-									<includes>
-										<include>css/</include>
-										<include>img/</include>
-										<include>js/</include>
-										<include>favicon.ico</include>
-										<include>index.html</include>
-									</includes>
 								</resource>
 							</resources>
 						</configuration>

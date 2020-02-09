@@ -1,32 +1,32 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app id="scheduler">
+    <app-bar :drawer="drawer" @drawer-change="onDrawerChange"/>
+    <app-drawer :drawer="drawer" @drawer-change="onDrawerChange"/>
+    <v-content>
+      <router-view/>
+    </v-content>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import AppBar from './components/AppBar'
+import AppDrawer from './components/AppDrawer'
 
-#nav {
-  padding: 30px;
+export default {
+  name: 'app',
+  components: {
+    AppBar,
+    AppDrawer
+  },
+  data () {
+    return {
+      drawer: false
+    }
+  },
+  methods: {
+    onDrawerChange: function (newDrawer) {
+      this.drawer = newDrawer
+    }
+  }
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>
