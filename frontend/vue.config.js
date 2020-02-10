@@ -1,8 +1,6 @@
 module.exports = {
   'transpileDependencies': [
-    'vuetify',
-    '@mdi/font',
-    'roboto-fontface'
+    'vuetify'
   ],
 
   devServer: {

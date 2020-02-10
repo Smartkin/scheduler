@@ -9,6 +9,8 @@
       <v-toolbar-title class="mr-4">Расписание вузов</v-toolbar-title>
     </router-link>
     <v-toolbar-items v-if="$vuetify.breakpoint.lgAndUp">
+      <v-btn depressed to="/schedule">Расписание</v-btn>
+      <v-btn depressed to="/create_lesson">Создать пару</v-btn>
       <v-btn depressed to="/about">О приложении</v-btn>
     </v-toolbar-items>
   </v-app-bar>

@@ -20,6 +20,16 @@
       </v-list-item>
       <v-divider/>
     </template>
+    <v-list>
+      <v-list-item
+        v-for="(schedule, i) in schedules"
+        :key="i"
+        to="/schedule"
+        v-ripple
+      >
+        {{ schedule.name }}
+      </v-list-item>
+    </v-list>
   </v-navigation-drawer>
 </template>
 
@@ -27,7 +37,10 @@
 export default {
   data () {
     return {
-      currentDrawer: false
+      currentDrawer: false,
+      schedules: [{
+        name: 'БСТ1602'
+      }]
     }
   },
   computed: {
