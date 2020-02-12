@@ -17,7 +17,7 @@ public class Init {
 
     @PostConstruct
     void init() {
-        scheduleService.createSchedule("МТУСИ", "ИТ", "БСТ1602", "8");
+        scheduleService.create("МТУСИ", "ИТ", "БСТ1602", "8");
         noteRepository.save(new Note(null, null, null, "aa", "rr"));
     }
 

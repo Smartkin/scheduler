@@ -5,15 +5,37 @@ import com.dvoeizlarza.scheduler.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ScheduleService {
     private ScheduleRepository scheduleRepository;
 
-    public Schedule getSchedule(Long id){
+    /**
+     * Получение конкретного расписания
+     * @param id - Номер расписания
+     * @return - Объект расписания Schedule
+     */
+    public Schedule read(Long id){
         return scheduleRepository.findById(id).orElse(null);
     }
 
-    public void createSchedule(String university, String faculty, String group, String semester){
+    /**
+     * Получение списка всех расписаний
+     * @return - Список из объектов расписания Schedule
+     */
+    public List<Schedule> readAll(){
+        return scheduleRepository.findAll();
+    }
+
+    /**
+     * Создание расписания
+     * @param university - ВУЗ
+     * @param faculty - Факультет
+     * @param group - Группа
+     * @param semester - Семестр
+     */
+    public void create(String university, String faculty, String group, String semester){
         Schedule schedule = new Schedule();
         schedule.setUniversity(university);
         schedule.setFaculty(faculty);

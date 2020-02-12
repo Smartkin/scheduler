@@ -33,5 +33,5 @@ public class Lesson {
 
     // Зависимости
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "lesson")
-    private List<Meeting> meetings;
+    private List<LessonDate> lessonDates;
 }

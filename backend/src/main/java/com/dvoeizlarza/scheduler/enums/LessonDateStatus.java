@@ -1,6 +1,6 @@
 package com.dvoeizlarza.scheduler.enums;
 
-public enum  MeetingStatus {
+public enum LessonDateStatus {
     Planned,
     Cancelled,
     Now

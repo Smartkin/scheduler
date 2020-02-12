@@ -1,6 +1,6 @@
 package com.dvoeizlarza.scheduler.entity;
 
-import com.dvoeizlarza.scheduler.enums.MeetingStatus;
+import com.dvoeizlarza.scheduler.enums.LessonDateStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
-public class Meeting {
+public class LessonDate {
     // Идентификатор
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +30,9 @@ public class Meeting {
     // Атомарные атрибуты
     private LocalDate date;
     @Enumerated(EnumType.STRING)
-    private MeetingStatus meetingStatus;
+    private LessonDateStatus lessonDateStatus;
 
     // Зависимости
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "meeting")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "lessonDate")
     private List<Note> notes;
 }

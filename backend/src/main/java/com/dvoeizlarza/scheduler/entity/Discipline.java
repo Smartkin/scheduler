@@ -25,6 +25,7 @@ public class Discipline {
 
     // Атомарные атрибуты
     private String name;
+    private String shortName;
     @Enumerated(EnumType.STRING)
     private CertificationType certificationType;
 

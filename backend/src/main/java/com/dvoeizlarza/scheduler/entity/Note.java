@@ -23,8 +23,8 @@ public class Note {
 
     // Внешние ключи
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEETING_ID")
-    private Meeting meeting;
+    @JoinColumn(name = "LESSONDATE_ID")
+    private LessonDate lessonDate;
 
     // Атомарные атрибуты
     private NoteType noteType;
