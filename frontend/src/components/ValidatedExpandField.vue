@@ -1,13 +1,15 @@
 <template>
   <conditional-expand-field
     :condition="condition"
+    @autoscroll="onAutoscroll"
   >
     <validation-provider
       :rules="condition ? rules : ''"
       :name="name"
       v-slot="{ errors }"
+      :vid="vid"
     >
-      <slot v-bind:errors="errors"/>
+      <slot :errors="errors"/>
     </validation-provider>
   </conditional-expand-field>
 </template>
@@ -31,6 +33,17 @@ export default {
     name: {
       type: String,
       required: true
+    },
+    vid: {
+      type: String,
+      required: true
+    }
+  },
+  methods: {
+    onAutoscroll (elem) {
+      console.log('Propagating autoscroll')
+      console.log(elem)
+      this.$emit('autoscroll', elem)
     }
   }
 }

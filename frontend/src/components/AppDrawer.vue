@@ -19,6 +19,26 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider/>
+      <v-list
+        expand
+      >
+        <v-list-item to="/create_lesson">
+          <v-list-item-icon>
+            <v-icon>mdi-calendar-plus</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Создать пару</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/about">
+          <v-list-item-icon>
+            <v-icon>mdi-information</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>О приложении</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </template>
     <v-list>
       <v-list-item

@@ -23,6 +23,11 @@ export default {
       drawer: false
     }
   },
+  mounted () {
+    if (!this.$store.state.schedule.schedule) {
+      this.$store.dispatch('schedule/set', 1)
+    }
+  },
   methods: {
     onDrawerChange: function (newDrawer) {
       this.drawer = newDrawer

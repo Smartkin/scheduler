@@ -43,7 +43,7 @@ export default {
     this.lessons.push(new Lesson({
       date: new Date(),
       type: 'Лекция',
-      name: 'Технологии и средства облачных сервисов',
+      name: 'dfasdhfashfiuasdhgfiuashgfiasghfaghsufasgfasufgasasdasdadasdadadaasdadadasddgfasdfagsdiukfgasugfasf',
       teachers: ['Гадасин Д. В.'],
       auditory: 'А-310',
       status: 'Идёт',

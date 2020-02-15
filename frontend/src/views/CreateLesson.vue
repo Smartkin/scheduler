@@ -1,10 +1,13 @@
 <template>
-  <validation-observer id="create-lesson" v-slot="{ invalid, validated, passes, validate, errors }">
+  <validation-observer
+    id="create-lesson"
+    v-slot="{ invalid, validated, passes, validate, errors }"
+  >
     <v-form>
       <v-container fluid>
         <v-row>
           <v-col md="6" cols="12">
-            <v-card min-height="150px">
+            <v-card>
               <v-card-title>
                 Предпросмотр
               </v-card-title>
@@ -14,11 +17,12 @@
               />
             </v-card>
           </v-col>
-          <v-col style="max-height: 800px" class="overflow-y-auto">
+          <v-col>
             <validation-provider
               name="тип недели"
               rules="required"
               v-slot="{ errors }"
+              vid="weekType"
             >
               <v-select
                 v-model="newLesson.weekType"
@@ -31,6 +35,8 @@
             <validated-expand-field
               :condition="newLesson.weekType === 'Период'"
               name="период"
+              vid="lessonPeriod"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
                 v-model="newLesson.dates"
@@ -41,6 +47,8 @@
             <validated-expand-field
               :condition="newLesson.weekType === 'Определённые даты'"
               name="даты"
+              vid="lessonDates"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
                 v-model="newLesson.dates"
@@ -49,13 +57,26 @@
               />
             </validated-expand-field>
             <validated-expand-field
-              :condition="newLesson.dates.length !== 0 || (newLesson.weekType && newLesson.weekType !== 'Период' && newLesson.weekType !== 'Определённые даты')"
+              :condition="newLesson.weekType && newLesson.weekType !== 'Период' && newLesson.weekType !== 'Определённые даты'"
+              name="день недели"
+              @autoscroll="onValidateAutoscroll"
+              vid="dayOfTheWeek"
+            >
+              <v-label>День недели</v-label>
+              <v-radio-group row v-model="dayOfTheWeekChoice">
+                <v-radio v-for="(day, i) in lessonDays" :key="i" :label="day"/>
+              </v-radio-group>
+            </validated-expand-field>
+            <validated-expand-field
+              :condition="newLesson.dates.length !== 0 || dayOfTheWeekChoice !== ''"
               v-slot="{ errors }"
               name="тип пары"
+              vid="lessonTypeStr"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-select
                 v-model="customType"
-                :items="lessonType"
+                :items="lessonTypes"
                 label="Тип пары"
                 :error-messages="errors"
                 @input="onLessonTypeChanged"
@@ -63,9 +84,11 @@
             </validated-expand-field>
             <validated-expand-field
               name="название типа пары"
-              :condition="customType === 'Другое'"
-              rules="required|min:6|max:255"
+              :condition="customType === 'Создать'"
+              rules="required|min:1|max:255"
               v-slot="{ errors }"
+              vid="lessonTypeStringField"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-text-field
                 counter="255"
@@ -76,8 +99,10 @@
             </validated-expand-field>
             <validated-expand-field
               name="время пары"
-              :condition="newLesson.type && (newLesson.type !== '' || newLesson.type.length() >= 6)"
+              :condition="newLesson.type && (newLesson.type !== '' || newLesson.type.length >= 1)"
               v-slot="{ errors }"
+              vid="lessonTimes"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-select
                 v-model="customTimes"
@@ -87,14 +112,17 @@
                 @input="onLessonTimesChanged"
               />
             </validated-expand-field>
+<!--        Создание новой пары времени для пар    -->
             <conditional-expand-field
-              :condition="customTimes === 'Другое'"
+              :condition="customTimes === 'Создать'"
+              vid="lessonCustomTimes"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-row>
                 <v-col md="6" cols="12">
                   <v-label>Начало</v-label>
                   <conditional-validation
-                    :condition="customTimes === 'Другое'"
+                    :condition="customTimes === 'Создать'"
                     rules="required"
                     name="время начала"
                     v-slot="{ errors }"
@@ -120,7 +148,7 @@
                 <v-col>
                   <v-label>Конец</v-label>
                   <conditional-validation
-                    :condition="customTimes === 'Другое'"
+                    :condition="customTimes === 'Создать'"
                     rules="required"
                     name="время конца"
                     v-slot="{ errors }"
@@ -145,13 +173,16 @@
                 </v-col>
               </v-row>
             </conditional-expand-field>
+<!--        Список преводавателей    -->
             <validated-expand-field
               :condition="newLesson.endTime && newLesson.startTime"
               name="список преподавателей"
               v-slot="{ errors }"
+              vid="lessonTeachers"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-select
-                v-model="newLesson.teachers"
+                v-model="selectedTeachers"
                 multiple
                 label="Список преподавателей"
                 :items="teachers"
@@ -159,24 +190,45 @@
                 :error-messages="errors"
               />
             </validated-expand-field>
+<!--        Создание нового преподавателя    -->
             <validated-expand-field
-              :condition="newLesson.teachers.length !== 0"
+              :condition="addTeachersField"
+              name="ФИО преподавателя"
+              rules="required|min:1|max:255"
+              v-slot="{ errors }"
+              vid="newTeacherName"
+              @autoscroll="onValidateAutoscroll"
+            >
+              <v-text-field
+                counter="255"
+                label="ФИО преподавателя"
+                v-model="newTeacher"
+                :error-messages="errors"
+                @input="onNewTeacherChanged"
+              />
+            </validated-expand-field>
+            <validated-expand-field
+              :condition="displayTeachers.length !== 0 || (addTeachersField && newTeacher.length >= 1)"
               name="название предмета"
               v-slot="{ errors }"
+              vid="lessonSubjects"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-select
                 v-model="customSubject"
-                :items="subjects"
+                :items="disciplines"
                 label="Название предмета"
                 @input="onLessonSubjectChanged"
                 :error-messages="errors"
               />
             </validated-expand-field>
             <validated-expand-field
-              :condition="customSubject === 'Другое'"
+              :condition="customSubject === 'Создать'"
               name="новый предмет"
               rules="required|min:1|max:255"
               v-slot="{ errors }"
+              vid="lessonCustomSubject"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-text-field
                 counter="255"
@@ -190,6 +242,8 @@
               rules="required|min:1|max:255"
               name="аудитория"
               v-slot="{ errors }"
+              vid="lessonAuditory"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-text-field
                 counter="255"
@@ -203,6 +257,8 @@
               rules="max:1024"
               name="комментарий"
               v-slot="{ errors }"
+              vid="lessonComment"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-textarea
                 v-model="newLesson.comment"
@@ -216,6 +272,8 @@
             </validated-expand-field>
             <conditional-expand-field
               :condition="!invalid"
+              vid="lessonCreateButton"
+              @autoscroll="onValidateAutoscroll"
             >
               <v-btn
                 block
@@ -238,23 +296,33 @@ import ClassCard from '../components/ClassCard'
 import ValidatedExpandField from '../components/ValidatedExpandField'
 import ConditionalExpandField from '../components/ConditionalExpandField'
 import ConditionalValidation from '../components/ConditionalValidation'
+import TeacherService from '../services/teacher.service'
+import DisciplineService from '../services/discipline.service'
+import TimeService from '../services/time.service'
+import TypeService from '../services/type.service'
 
 export default {
   name: 'create-lesson',
   data () {
     return {
       lessonRepeatType: ['Каждую', 'Чётные', 'Нечётные', 'Период', 'Определённые даты'],
-      lessonType: ['Лекция', 'Практика', 'Лабораторные работы', 'Другое'],
-      lessonTimes: ['9:30-11:05', '11:15-12:50', '13:00-14:35', '15:00-16:30', 'Другое'],
-      teachers: ['Гадасин Д. В.', 'Беленькая М. Н.', '+'],
-      subjects: ['Технологии и средства облачных сервисов', 'Другое'],
+      lessonDays: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
+      lessonTypes: ['Лекция', 'Практика', 'Лабораторные работы', 'Создать'],
+      lessonTimes: ['9:30-11:05', '11:15-12:50', '13:00-14:35', '15:00-16:30', 'Создать'],
+      teachers: ['Гадасин Д. В.', 'Беленькая М. Н.', 'Создать'],
+      disciplines: ['Технологии и средства облачных сервисов', 'Создать'],
       customType: '',
       customTimes: '',
       customSubject: '',
       startTime: null,
       endTime: null,
       addTeachersField: false,
+      selectedTeachers: [],
+      displayTeachers: [],
+      newTeacher: '',
+      dayOfTheWeekChoice: '',
       newLesson: {
+        weekType: '',
         dates: [],
         date: new Date(),
         type: '',
@@ -263,8 +331,10 @@ export default {
         auditory: '',
         startTime: '',
         endTime: '',
-        comment: ''
-      }
+        comment: '',
+        day: ''
+      },
+      test: false // Флаг на осуществление тестирования с тестовыми данными
     }
   },
   components: {
@@ -275,9 +345,32 @@ export default {
     ValidationObserver,
     ValidationProvider
   },
+  mounted () {
+    if (!this.test) {
+      TeacherService.get().then(teachers => {
+        this.teachers = teachers
+        this.teachers.push('Создать')
+      }, error => {
+        console.error(error)
+      })
+      DisciplineService.get().then(disciplines => {
+        this.disciplines = disciplines
+        this.disciplines.push('Создать')
+      })
+      TimeService.get().then(times => {
+        this.lessonTimes = times
+        this.lessonTimes.push('Создать')
+      })
+      TypeService.get().then(types => {
+        this.lessonTypes = types
+        this.lessonTypes.push('Создать')
+      })
+    }
+  },
   methods: {
     createLesson () {
       console.log('Created lesson: ')
+      this.newLesson.day = this.lessonDays[this.dayOfTheWeekChoice]
       console.log(this.newLesson)
     },
     onWeekTypeChanged () {
@@ -309,13 +402,18 @@ export default {
       this.newLesson.endTime = ''
     },
     resetChosenDates () {
-      this.newLesson.dates.length = 0
+      this.newLesson.dates.splice(0, this.newLesson.dates.length)
+      this.newLesson.day = ''
     },
     resetCustomSubject () {
       this.customSubject = ''
       this.newLesson.name = ''
     },
     resetTeachers () {
+      this.addTeachersField = false
+      this.selectedTeachers.splice(0, this.selectedTeachers.length)
+      this.displayTeachers.splice(0, this.displayTeachers.length)
+      this.newTeacher = ''
       this.newLesson.teachers = []
     },
     resetAuditory () {
@@ -325,7 +423,7 @@ export default {
       this.newLesson.comment = ''
     },
     onLessonTypeChanged () {
-      if (this.customType !== 'Другое') {
+      if (this.customType !== 'Создать') {
         this.newLesson.type = this.customType
       } else {
         this.newLesson.type = ''
@@ -337,7 +435,7 @@ export default {
       this.resetComment()
     },
     onLessonTimesChanged () {
-      if (this.customTimes !== 'Другое') {
+      if (this.customTimes !== 'Создать') {
         this.newLesson.startTime = this.customTimes.slice(0, this.customTimes.indexOf('-'))
         this.newLesson.endTime = this.customTimes.slice(this.customTimes.indexOf('-') + 1)
       } else {
@@ -355,22 +453,43 @@ export default {
       this.newLesson.endTime = this.endTime
     },
     onLessonTeachersChanged () {
-      if (this.newLesson.teachers.find((teacherName) => { return teacherName === '+' }) === '+') {
+      this.displayTeachers.splice(0, this.displayTeachers.length)
+      this.selectedTeachers.forEach(teacher => { this.displayTeachers.push(teacher) })
+      if (this.selectedTeachers.find((teacherName) => { return teacherName === 'Создать' })) {
         this.addTeachersField = true
+        this.displayTeachers.splice(this.newLesson.teachers.indexOf('Создать'), 1)
+        this.displayTeachers.push(this.newTeacher)
+        console.log('Add teachers triggered')
+      } else {
+        this.addTeachersField = false
+        console.log('Add teachers field disabled')
       }
+      this.newLesson.teachers = this.displayTeachers
       this.newLesson.name = ''
       this.resetCustomSubject()
       this.resetAuditory()
       this.resetComment()
     },
+    onNewTeacherChanged () {
+      this.displayTeachers.splice(0, this.displayTeachers.length)
+      this.selectedTeachers.forEach(teacher => { this.displayTeachers.push(teacher) })
+      this.displayTeachers.splice(this.newLesson.teachers.indexOf('Создать'), 1)
+      this.displayTeachers.push(this.newTeacher)
+      this.newLesson.teachers = this.displayTeachers
+    },
     onLessonSubjectChanged () {
-      if (this.customSubject !== 'Другое') {
+      if (this.customSubject !== 'Создать') {
         this.newLesson.name = this.customSubject
       } else {
         this.newLesson.name = ''
       }
       this.resetAuditory()
       this.resetComment()
+    },
+    onValidateAutoscroll (elem) {
+      console.log('Received autoscroll request with options:')
+      console.log(elem.options)
+      this.$vuetify.goTo(elem.$el, elem.options)
     }
   }
 }
