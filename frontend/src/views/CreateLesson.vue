@@ -321,6 +321,7 @@ export default {
       displayTeachers: [],
       newTeacher: '',
       dayOfTheWeekChoice: '',
+      fetchedBackEndData: {},
       newLesson: {
         weekType: '',
         dates: [],
@@ -348,20 +349,26 @@ export default {
   mounted () {
     if (!this.test) {
       TeacherService.get().then(teachers => {
-        this.teachers = teachers
+        let teacherNames = []
+        this.fetchedBackEndData.teachers = teachers
+        teachers.forEach(teacher => { teacherNames.push(teacher.name) })
+        this.teachers = teacherNames
         this.teachers.push('Создать')
       }, error => {
         console.error(error)
       })
       DisciplineService.get().then(disciplines => {
+        this.fetchedBackEndData.disciplines = disciplines
         this.disciplines = disciplines
         this.disciplines.push('Создать')
       })
       TimeService.get().then(times => {
+        this.fetchedBackEndData.times = times
         this.lessonTimes = times
         this.lessonTimes.push('Создать')
       })
       TypeService.get().then(types => {
+        this.fetchedBackEndData.types = types
         this.lessonTypes = types
         this.lessonTypes.push('Создать')
       })
