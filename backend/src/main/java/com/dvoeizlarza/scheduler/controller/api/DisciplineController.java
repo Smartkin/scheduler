@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("api/discipline")
@@ -32,11 +33,13 @@ public class DisciplineController {
         return disciplineViewConverter.convert(discipline);
     }
 
+    @Autowired
+    TeacherController teacherController;
     @GetMapping("list")
     @ResponseBody
     Object readList(@RequestParam Long schId){
         List<Discipline> disciplines = disciplineService.readList(schId);
-        return disciplines.stream().map(disciplineViewConverter::convert);
+        return disciplines.stream().map(disciplineViewConverter::convert).collect(Collectors.toList());
     }
 
     @Autowired

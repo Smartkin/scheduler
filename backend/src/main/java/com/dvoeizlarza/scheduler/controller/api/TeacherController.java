@@ -16,10 +16,14 @@ public class TeacherController {
     private TeacherViewConverter teacherViewConverter;
 
     @PostMapping("create")
-    void create(@RequestParam Long schId,
+    @ResponseBody
+    String create(@RequestParam Long schId,
                        @RequestParam String name,
                        @RequestParam(defaultValue = "") String info){
-            teacherService.create(schId, name, info);
+            if (teacherService.create(schId, name, info) != null){
+                return "Success";
+            }
+            return "Fail";
     }
 
     @GetMapping

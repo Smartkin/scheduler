@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -28,6 +29,8 @@ public class Schedule {
     private String faculty;
     private String groupName;
     private String semester;
+    private LocalDate start;
+    private LocalDate stop;
 
     // Зависимости
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")

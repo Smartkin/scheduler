@@ -14,16 +14,17 @@ public class TeacherService {
     private TeacherRepository teacherRepository;
     private ScheduleRepository scheduleRepository;
 
-    public void create(Long scheduleId, String name, String info){
+    public Teacher create(Long scheduleId, String name, String info){
         Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
         if(schedule == null){
-            return;
+            return null;
         }
         Teacher teacher = new Teacher();
         teacher.setSchedule(schedule);
         teacher.setName(name);
         teacher.setInfo(info);
         teacherRepository.save(teacher);
+        return teacher;
     }
 
     public List<Teacher> readList(Long schId){

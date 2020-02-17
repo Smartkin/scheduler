@@ -5,6 +5,7 @@ import com.dvoeizlarza.scheduler.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -35,13 +36,15 @@ public class ScheduleService {
      * @param group - Группа
      * @param semester - Семестр
      */
-    public void create(String university, String faculty, String group, String semester){
+    public Schedule create(String university, String faculty, String group, String semester){
         Schedule schedule = new Schedule();
         schedule.setUniversity(university);
         schedule.setFaculty(faculty);
         schedule.setGroupName(group);
         schedule.setSemester(semester);
+        schedule.setStart(LocalDate.now());
         scheduleRepository.save(schedule);
+        return schedule;
     }
 
     @Autowired

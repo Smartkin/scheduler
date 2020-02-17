@@ -16,10 +16,10 @@ public class DisciplineService {
     private ScheduleRepository scheduleRepository;
 
     //CRud
-    public void create(Long id, Long schId, String name, String shortName, CertificationType certificationType){
+    public Discipline create(Long id, Long schId, String name, String shortName, CertificationType certificationType){
         Schedule schedule = scheduleRepository.findById(schId).orElse(null);
         if(schedule==null){
-            return;
+            return null;
         }
         Discipline discipline = new Discipline();
         discipline.setId(id);
@@ -28,6 +28,7 @@ public class DisciplineService {
         discipline.setShortName(shortName);
         discipline.setCertificationType(certificationType);
         disciplineRepository.save(discipline);
+        return discipline;
     }
 
     public Discipline read(Long id){

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("api/time")
@@ -26,15 +27,15 @@ public class TimeController {
 
     @GetMapping
     @ResponseBody
-    public Object read(Long id){
+    public Object read(@RequestParam Long id){
         Time time = timeService.read(id);
         return timeViewConverter.convert(time);
     }
 
     @GetMapping("list")
     @ResponseBody
-    public Object readList(Long schid){
-        return timeService.readList(schid).stream().map(timeViewConverter::convert);
+    public Object readList(@RequestParam Long schId){
+        return timeService.readList(schId).stream().map(timeViewConverter::convert).collect(Collectors.toList());
     }
 
     @Autowired

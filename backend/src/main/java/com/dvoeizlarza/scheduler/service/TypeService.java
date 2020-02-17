@@ -14,16 +14,17 @@ public class TypeService {
     private TypeRepository typeRepository;
     private ScheduleRepository scheduleRepository;
 
-    public void create(Long schId, Long id, String name){
+    public Type create(Long schId, Long id, String name){
         Schedule schedule = scheduleRepository.findById(schId).orElse(null);
         if(schedule==null){
-            return;
+            return null;
         }
         Type type = new Type();
         type.setId(id);
         type.setSchedule(schedule);
         type.setName(name);
         typeRepository.save(type);
+        return type;
     }
 
     public Type read(Long id){

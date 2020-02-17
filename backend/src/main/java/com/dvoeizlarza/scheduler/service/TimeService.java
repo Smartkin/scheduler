@@ -15,10 +15,10 @@ public class TimeService {
     private TimeRepository timeRepository;
     private ScheduleRepository scheduleRepository;
 
-    public void create(Long id, Long schId, String name, LocalTime begin, LocalTime end){
+    public Time create(Long id, Long schId, String name, LocalTime begin, LocalTime end){
         Schedule schedule = scheduleRepository.findById(schId).orElse(null);
         if(schedule==null){
-            return;
+            return null;
         }
         Time time = new Time();
         time.setSchedule(schedule);
@@ -27,6 +27,7 @@ public class TimeService {
         time.setEnd(end);
         time.setName(name);
         timeRepository.save(time);
+        return time;
     }
 
     public Time read(Long id){
