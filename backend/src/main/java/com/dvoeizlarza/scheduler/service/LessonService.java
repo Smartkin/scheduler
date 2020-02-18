@@ -77,7 +77,7 @@ public class LessonService {
 
     private List<LocalDate> getDates(LessonDto dto){
         TemporalField woy = WeekFields.of(Locale.getDefault()).weekBasedYear();
-        int defWeek = dto.getSchedule().getStart().get(woy);
+        int defWeek = scheduleService.read(dto.getSchId()).getStart().get(woy);
 
         List<LocalDate> dates = new LinkedList<>();
         LocalDate date = dto.getStartDate();

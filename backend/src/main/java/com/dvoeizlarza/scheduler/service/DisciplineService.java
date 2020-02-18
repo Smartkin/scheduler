@@ -1,34 +1,21 @@
 package com.dvoeizlarza.scheduler.service;
 
+import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.entity.Discipline;
 import com.dvoeizlarza.scheduler.entity.Schedule;
-import com.dvoeizlarza.scheduler.enums.CertificationType;
 import com.dvoeizlarza.scheduler.repository.DisciplineRepository;
-import com.dvoeizlarza.scheduler.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class DisciplineService {
+public class DisciplineService implements CRLUD{
+    private ScheduleService scheduleService;
     private DisciplineRepository disciplineRepository;
-    private ScheduleRepository scheduleRepository;
 
-    //CRud
-    public Discipline create(Long id, Long schId, String name, String shortName, CertificationType certificationType){
-        Schedule schedule = scheduleRepository.findById(schId).orElse(null);
-        if(schedule==null){
-            return null;
-        }
-        Discipline discipline = new Discipline();
-        discipline.setId(id);
-        discipline.setSchedule(schedule);
-        discipline.setName(name);
-        discipline.setShortName(shortName);
-        discipline.setCertificationType(certificationType);
-        disciplineRepository.save(discipline);
-        return discipline;
+    public Discipline create(DisciplineDto dto) {
+        return modify(null, dto);
     }
 
     public Discipline read(Long id){
@@ -39,13 +26,35 @@ public class DisciplineService {
         return disciplineRepository.findByScheduleId(schId);
     }
 
-    @Autowired
-    public void setDisciplineRepository(DisciplineRepository disciplineRepository) {
-        this.disciplineRepository = disciplineRepository;
+
+    public Discipline modify(Long id, DisciplineDto dto) {
+        DisciplineDto dis = (DisciplineDto) dto;
+
+        Schedule schedule = scheduleService.read(dis.getSchId());
+        if(schedule==null){
+            return null;
+        }
+        Discipline discipline = new Discipline();
+        discipline.setId(id);
+        discipline.setSchedule(schedule);
+        discipline.setName(dis.getName());
+        discipline.setShortName(dis.getShortName());
+        discipline.setCertificationType(dis.getCertificationType());
+        disciplineRepository.save(discipline);
+        return discipline;
+    }
+
+    public Object delete(Long id) {
+        return null;
     }
 
     @Autowired
-    public void setScheduleRepository(ScheduleRepository scheduleRepository) {
-        this.scheduleRepository = scheduleRepository;
+    public void setScheduleService(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
+    }
+
+    @Autowired
+    public void setDisciplineRepository(DisciplineRepository disciplineRepository) {
+        this.disciplineRepository = disciplineRepository;
     }
 }

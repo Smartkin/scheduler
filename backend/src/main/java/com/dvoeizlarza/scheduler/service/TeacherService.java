@@ -1,5 +1,6 @@
 package com.dvoeizlarza.scheduler.service;
 
+import com.dvoeizlarza.scheduler.dto.TeacherDto;
 import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.entity.Teacher;
 import com.dvoeizlarza.scheduler.repository.ScheduleRepository;
@@ -10,29 +11,38 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TeacherService {
+public class TeacherService implements CRLUD {
+    private ScheduleService scheduleService;
     private TeacherRepository teacherRepository;
-    private ScheduleRepository scheduleRepository;
 
-    public Teacher create(Long scheduleId, String name, String info){
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
-        if(schedule == null){
-            return null;
-        }
-        Teacher teacher = new Teacher();
-        teacher.setSchedule(schedule);
-        teacher.setName(name);
-        teacher.setInfo(info);
-        teacherRepository.save(teacher);
-        return teacher;
+    public Teacher create(TeacherDto dto){
+        return modify(null, dto);
+    }
+
+    public Teacher read(Long id){
+        return teacherRepository.findById(id).orElse(null);
     }
 
     public List<Teacher> readList(Long schId){
         return teacherRepository.findByScheduleId(schId);
     }
 
-    public Teacher read(Long id){
-        return teacherRepository.findById(id).orElse(null);
+    public Teacher modify(Long id, TeacherDto dto){
+        Schedule schedule = scheduleService.read(dto.getSchId());
+        if(schedule == null){
+            return null;
+        }
+        Teacher teacher = new Teacher();
+        teacher.setId(id);
+        teacher.setSchedule(schedule);
+        teacher.setName(dto.getName());
+        teacher.setInfo(dto.getInfo());
+        teacherRepository.save(teacher);
+        return teacher;
+    }
+
+    public Teacher delete(Long id){
+        return null;
     }
 
     @Autowired
@@ -41,7 +51,7 @@ public class TeacherService {
     }
 
     @Autowired
-    public void setScheduleRepository(ScheduleRepository scheduleRepository) {
-        this.scheduleRepository = scheduleRepository;
+    public void setScheduleService(ScheduleService scheduleService) {
+        this.scheduleService = scheduleService;
     }
 }

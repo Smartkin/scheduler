@@ -1,5 +1,6 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
+import com.dvoeizlarza.scheduler.dto.TypeDto;
 import com.dvoeizlarza.scheduler.entity.Type;
 import com.dvoeizlarza.scheduler.service.TypeService;
 import com.dvoeizlarza.scheduler.viewconverter.TypeViewConverter;
@@ -17,10 +18,8 @@ public class TypeController {
 
     @PostMapping("create")
     @ResponseBody
-    void create(@RequestParam Long schId,
-                @RequestParam(defaultValue = "") Long id,
-                @RequestParam String name){
-        typeService.create(schId, id, name);
+    void create(@RequestBody TypeDto dto) {
+        typeService.create(dto);
     }
 
     @GetMapping

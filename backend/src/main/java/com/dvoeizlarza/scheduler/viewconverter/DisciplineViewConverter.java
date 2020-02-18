@@ -18,7 +18,9 @@ public class DisciplineViewConverter implements Converter<Discipline, Discipline
         view.setShortName(discipline.getShortName());
         view.setCertificationType(discipline.getCertificationType());
         view.setSchedule(discipline.getSchedule().getId());
-        view.setTdts(discipline.getTdts().stream().map(TDT::getId).collect(Collectors.toList()));
+        if(discipline.getTdts()!=null) {
+            view.setTdts(discipline.getTdts().stream().map(TDT::getId).collect(Collectors.toList()));
+        }
         return view;
     }
 }

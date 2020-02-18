@@ -1,7 +1,9 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
+import com.dvoeizlarza.scheduler.dto.TimeDto;
 import com.dvoeizlarza.scheduler.entity.Time;
 import com.dvoeizlarza.scheduler.service.TimeService;
+import com.dvoeizlarza.scheduler.view.TimeView;
 import com.dvoeizlarza.scheduler.viewconverter.TimeViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +20,8 @@ public class TimeController {
 
     @PostMapping("create")
     @ResponseBody
-    void create(@RequestParam Long schId,
-                @RequestParam String name,
-                @RequestParam LocalTime begin,
-                @RequestParam LocalTime end){
-        timeService.create(null, schId, name, begin, end);
+    TimeView create(@RequestBody TimeDto dto){
+        return timeViewConverter.convert(timeService.create(dto));
     }
 
     @GetMapping

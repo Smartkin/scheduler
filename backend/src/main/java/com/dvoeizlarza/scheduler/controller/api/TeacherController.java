@@ -1,5 +1,6 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
+import com.dvoeizlarza.scheduler.dto.TeacherDto;
 import com.dvoeizlarza.scheduler.entity.Teacher;
 import com.dvoeizlarza.scheduler.service.TeacherService;
 import com.dvoeizlarza.scheduler.viewconverter.TeacherViewConverter;
@@ -17,10 +18,8 @@ public class TeacherController {
 
     @PostMapping("create")
     @ResponseBody
-    String create(@RequestParam Long schId,
-                       @RequestParam String name,
-                       @RequestParam(defaultValue = "") String info){
-            if (teacherService.create(schId, name, info) != null){
+    String create(@RequestBody TeacherDto dto){
+            if (teacherService.create(dto) != null){
                 return "Success";
             }
             return "Fail";

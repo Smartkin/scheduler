@@ -22,7 +22,7 @@ public class LessonDto {
     private LocalDate endDate;
     private List<LocalDate> dates;
 
-    private Schedule schedule;
+    private Long schId;
     private List<Teacher> teacherList;
     private Discipline discipline;
     private Type type;
