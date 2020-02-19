@@ -28,18 +28,16 @@ public class DisciplineService implements CRLUD{
 
 
     public Discipline modify(Long id, DisciplineDto dto) {
-        DisciplineDto dis = (DisciplineDto) dto;
-
-        Schedule schedule = scheduleService.read(dis.getSchId());
+        Schedule schedule = scheduleService.read(dto.getSchId());
         if(schedule==null){
             return null;
         }
         Discipline discipline = new Discipline();
         discipline.setId(id);
         discipline.setSchedule(schedule);
-        discipline.setName(dis.getName());
-        discipline.setShortName(dis.getShortName());
-        discipline.setCertificationType(dis.getCertificationType());
+        discipline.setName(dto.getName());
+        discipline.setShortName(dto.getShortName());
+        discipline.setCertificationType(dto.getCertificationType());
         disciplineRepository.save(discipline);
         return discipline;
     }
