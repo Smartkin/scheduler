@@ -22,6 +22,23 @@ public class TypeService {
         return typeRepository.findById(id).orElse(null);
     }
 
+    public Type readOrCreate(TypeDto dto){
+        if(dto==null){
+            return null;
+        }
+        Type type = null;
+        if(dto.getId()!=null){
+            type = read(dto.getId());
+            if(!type.getSchedule().getId().equals(dto.getSchId())){
+                type = null;
+            }
+        }
+        if(type==null){
+            type = create(dto);
+        }
+        return type;
+    }
+
     public List<Type> readList(Long schId){
         return typeRepository.findByScheduleId(schId);
     }

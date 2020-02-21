@@ -1,6 +1,6 @@
 package com.dvoeizlarza.scheduler.service;
 
-import com.dvoeizlarza.scheduler.dto.LessonDto;
+import com.dvoeizlarza.scheduler.dto.*;
 import com.dvoeizlarza.scheduler.entity.*;
 import com.dvoeizlarza.scheduler.enums.LessonDateStatus;
 import com.dvoeizlarza.scheduler.enums.WeekType;
@@ -14,6 +14,7 @@ import java.time.temporal.WeekFields;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 public class LessonService {
@@ -28,14 +29,19 @@ public class LessonService {
     private LessonRepository lessonRepository;
     private LessonDateRepository lessonDateRepository;
 
+    private Discipline discipline;
+    private List<Teacher> teacherList;
+    private Time time;
+    private Type type;
+
     public Lesson create(LessonDto dto){
         postValidate(dto);
         TDT tdt = new TDT();
-        tdt.setDiscipline(dto.getDiscipline());
-        tdt.setType(dto.getType());
+        tdt.setDiscipline(discipline);
+        tdt.setType(type);
         tdtRepository.save(tdt);
 
-        for(Teacher t: dto.getTeacherList()) {
+        for(Teacher t: teacherList) {
             Teachers teachers = new Teachers();
             teachers.setTdt(tdt);
             teachers.setTeacher(t);
@@ -44,7 +50,7 @@ public class LessonService {
 
         Lesson lesson = new Lesson();
         lesson.setTdt(tdt);
-        lesson.setTime(dto.getTime());
+        lesson.setTime(time);
         lesson.setAuditorium(dto.getAuditory());
         lessonRepository.save(lesson);
 
@@ -63,16 +69,29 @@ public class LessonService {
         return lesson;
     }
 
-    private LessonDto postValidate(LessonDto dto){
-/*
-        Schedule schedule = scheduleService.read(dto.getSchedule().getId());
+    private void postValidate(LessonDto dto){
+        Schedule schedule = scheduleService.read(dto.getSchId());
         if(schedule==null){
-            schedule = dto.getSchedule();
-            schedule.setId(null);
+            return;
         }
-*/
-
-        return dto;
+        DisciplineDto disciplineDto = dto.getDiscipline();
+        TimeDto timeDto = dto.getTime();
+        TypeDto typeDto = dto.getType();
+        List<TeacherDto> teachersDto = dto.getTeacherList();
+        if(!dto.getSchId().equals(disciplineDto.getSchId()) ||
+                !dto.getSchId().equals(timeDto.getSchId()) ||
+                !dto.getSchId().equals(typeDto.getSchId())){
+            return;
+        }
+        for (TeacherDto t: teachersDto){
+            if(!dto.getSchId().equals(t.getSchId())){
+                return;
+            }
+        }
+        discipline = disciplineService.readOrCreate(disciplineDto);
+        time = timeService.readOrCreate(timeDto);
+        type = typeService.readOrCreate(typeDto);
+        teacherList = teachersDto.stream().map(teacherService::readOrCreate).collect(Collectors.toList());
     }
 
     private List<LocalDate> getDates(LessonDto dto){

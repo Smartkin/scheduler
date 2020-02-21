@@ -1,11 +1,14 @@
 package com.dvoeizlarza.scheduler.dto;
 
 import com.dvoeizlarza.scheduler.entity.Schedule;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalTime;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TimeDto {
     private Long id;
 

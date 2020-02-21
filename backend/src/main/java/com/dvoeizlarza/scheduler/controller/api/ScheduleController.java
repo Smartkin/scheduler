@@ -1,5 +1,6 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
+import com.dvoeizlarza.scheduler.dto.ScheduleDto;
 import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.service.ScheduleService;
 import com.dvoeizlarza.scheduler.viewconverter.ScheduleViewConverter;
@@ -15,18 +16,15 @@ public class ScheduleController {
 
     //CRud
     @PostMapping("create")
-    void create(@RequestParam(name = "university") String university,
-                        @RequestParam(name = "faculty") String faculty,
-                        @RequestParam(name = "group") String group,
-                        @RequestParam(name = "semester") String semester) {
-        scheduleService.create(university, faculty, group, semester);
+    void create(@RequestBody ScheduleDto scheduleDto) {
+        scheduleService.create(scheduleDto);
     }
 
     @GetMapping
     @ResponseBody
     Object read(@RequestParam(name = "id", defaultValue = "") Long id) {
         if (id == null) {
-            return scheduleService.readAll().stream().map(scheduleViewConverter::convert);
+            return scheduleService.readList().stream().map(scheduleViewConverter::convert);
         }
         Schedule schedule = scheduleService.read(id);
         return scheduleViewConverter.convert(schedule);

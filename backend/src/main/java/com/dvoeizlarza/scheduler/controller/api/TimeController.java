@@ -1,8 +1,10 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
+import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.dto.TimeDto;
 import com.dvoeizlarza.scheduler.entity.Time;
 import com.dvoeizlarza.scheduler.service.TimeService;
+import com.dvoeizlarza.scheduler.view.DisciplineView;
 import com.dvoeizlarza.scheduler.view.TimeView;
 import com.dvoeizlarza.scheduler.viewconverter.TimeViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,12 @@ public class TimeController {
     @ResponseBody
     public Object readList(@RequestParam Long schId){
         return timeService.readList(schId).stream().map(timeViewConverter::convert).collect(Collectors.toList());
+    }
+
+    @PostMapping("modify")
+    @ResponseBody
+    TimeView modify(@RequestParam Long id, @RequestBody TimeDto dto){
+        return timeViewConverter.convert(timeService.modify(id, dto));
     }
 
     @Autowired

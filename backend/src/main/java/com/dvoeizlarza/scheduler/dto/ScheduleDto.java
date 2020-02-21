@@ -1,10 +1,13 @@
 package com.dvoeizlarza.scheduler.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ScheduleDto {
     private Long id;
 

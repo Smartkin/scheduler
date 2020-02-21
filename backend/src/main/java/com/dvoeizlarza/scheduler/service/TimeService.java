@@ -1,6 +1,8 @@
 package com.dvoeizlarza.scheduler.service;
 
+import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.dto.TimeDto;
+import com.dvoeizlarza.scheduler.entity.Discipline;
 import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.entity.Time;
 import com.dvoeizlarza.scheduler.repository.TimeRepository;
@@ -20,6 +22,23 @@ public class TimeService {
 
     public Time read(Long id){
         return timeRepository.findById(id).orElse(null);
+    }
+
+    public Time readOrCreate(TimeDto dto){
+        if(dto==null){
+            return null;
+        }
+        Time time = null;
+        if(dto.getId()!=null){
+            time = read(dto.getId());
+            if(!time.getSchedule().getId().equals(dto.getSchId())){
+                time = null;
+            }
+        }
+        if(time==null){
+            time = create(dto);
+        }
+        return time;
     }
 
     public List<Time> readList(Long schId){

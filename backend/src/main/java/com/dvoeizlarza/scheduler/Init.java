@@ -1,14 +1,10 @@
 package com.dvoeizlarza.scheduler;
 
-import com.dvoeizlarza.scheduler.dto.DisciplineDto;
-import com.dvoeizlarza.scheduler.dto.LessonDto;
+import com.dvoeizlarza.scheduler.dto.*;
 import com.dvoeizlarza.scheduler.entity.*;
 import com.dvoeizlarza.scheduler.enums.CertificationType;
 import com.dvoeizlarza.scheduler.enums.WeekType;
-import com.dvoeizlarza.scheduler.repository.LessonRepository;
-import com.dvoeizlarza.scheduler.repository.NoteRepository;
 import com.dvoeizlarza.scheduler.service.*;
-import com.dvoeizlarza.scheduler.view.DisciplineView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,27 +32,16 @@ public class Init {
 
     @PostConstruct
     void init() {
-        Schedule schedule = scheduleService.create("МТУСИ", "ИТ", "БСТ1602", "8");
-        Discipline discipline = disciplineService.create(new DisciplineDto(null, 1L, "Text", null, CertificationType.Nope));
-//        Teacher teacher = teacherService.create(1L, "Krot", null);
-//        List<Teacher> teachers = new LinkedList<>();
-//        teachers.add(teacher);
-//        Type type = typeService.create(1L, null, "Лекция");
-//        Time time = timeService.create(null, 1L, "Default", LocalTime.of(9,30), LocalTime.of(11,15));
-
-//        LessonDto lessonDto = new LessonDto();
-//        lessonDto.setSchedule(schedule);
-//        lessonDto.setDiscipline(discipline);
-//        lessonDto.setTeacherList(teachers);
-//        lessonDto.setType(type);
-//        lessonDto.setTime(time);
-//        lessonDto.setStartDate(LocalDate.of(2020, 2, 4));
-//        lessonDto.setEndDate(LocalDate.of(2020, 4, 30));
-//        lessonDto.setAuditory("A-555");
-//        lessonDto.setWeekdays(DayOfWeek.MONDAY);
-//        lessonDto.setWeekType(WeekType.Any);
-
-//        lessonService.create(lessonDto);
+        ScheduleDto scheduleDto = new ScheduleDto(null, "МТУСИ", "ИТ", "БСТ1602", "8", LocalDate.of(2020,2,4), LocalDate.of(2020,4,30));
+        Schedule schedule = scheduleService.create(scheduleDto);
+        DisciplineDto disciplineDto = new DisciplineDto(null, 1L, "Text", null, CertificationType.Nope);
+        Discipline discipline = disciplineService.create(disciplineDto);
+        TeacherDto teacherDto = new TeacherDto(null, 1L, "Крот", "Препод");
+        List<TeacherDto> teacherDtos = new LinkedList<>();
+        teacherDtos.add(teacherDto);
+        TypeDto typeDto = new TypeDto(null, 1L, "Лекция");
+        TimeDto timeDto = new TimeDto(null, 1L, "Первая пара", LocalTime.of(9,30), LocalTime.of(11, 5));
+        LessonDto lessonDto = new LessonDto(WeekType.Any, DayOfWeek.MONDAY, LocalDate.of(2019,2,4), LocalDate.of(2020,4,30),null, 1L, teacherDtos, disciplineDto, typeDto, timeDto, "A-321", "");
     }
 
     @Autowired

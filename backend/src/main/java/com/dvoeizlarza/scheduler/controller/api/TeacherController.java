@@ -1,8 +1,11 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
+import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.dto.TeacherDto;
 import com.dvoeizlarza.scheduler.entity.Teacher;
 import com.dvoeizlarza.scheduler.service.TeacherService;
+import com.dvoeizlarza.scheduler.view.DisciplineView;
+import com.dvoeizlarza.scheduler.view.TeacherView;
 import com.dvoeizlarza.scheduler.viewconverter.TeacherViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +39,12 @@ public class TeacherController {
     @ResponseBody
     Object readList(@RequestParam Long schId){
         return teacherService.readList(schId).stream().map(teacherViewConverter::convert).collect(Collectors.toList());
+    }
+
+    @PostMapping("modify")
+    @ResponseBody
+    TeacherView modify(@RequestParam Long id, @RequestBody TeacherDto dto){
+        return teacherViewConverter.convert(teacherService.modify(id, dto));
     }
 
     @Autowired

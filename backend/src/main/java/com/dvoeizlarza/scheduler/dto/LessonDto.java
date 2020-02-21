@@ -23,10 +23,10 @@ public class LessonDto {
     private List<LocalDate> dates;
 
     private Long schId;
-    private List<Teacher> teacherList;
-    private Discipline discipline;
-    private Type type;
-    private Time time;
+    private List<TeacherDto> teacherList;
+    private DisciplineDto discipline;
+    private TypeDto type;
+    private TimeDto time;
 
     private String auditory;
     private String comment;

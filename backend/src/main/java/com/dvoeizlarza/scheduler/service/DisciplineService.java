@@ -22,6 +22,23 @@ public class DisciplineService implements CRLUD{
         return disciplineRepository.findById(id).orElse(null);
     }
 
+    public Discipline readOrCreate(DisciplineDto dto){
+        if(dto==null){
+            return null;
+        }
+        Discipline discipline = null;
+        if(dto.getId()!=null){
+            discipline = read(dto.getId());
+            if(!discipline.getSchedule().getId().equals(dto.getSchId())){
+                discipline = null;
+            }
+        }
+        if(discipline==null){
+            discipline = create(dto);
+        }
+        return discipline;
+    }
+
     public List<Discipline> readList(Long schId){
         return disciplineRepository.findByScheduleId(schId);
     }

@@ -1,5 +1,6 @@
 package com.dvoeizlarza.scheduler.service;
 
+import com.dvoeizlarza.scheduler.dto.ScheduleDto;
 import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,13 @@ import java.util.List;
 @Service
 public class ScheduleService {
     private ScheduleRepository scheduleRepository;
+
+    /**
+     * Создание расписания
+     */
+    public Schedule create(ScheduleDto dto){
+        return modify(null, dto);
+    }
 
     /**
      * Получение конкретного расписания
@@ -25,23 +33,17 @@ public class ScheduleService {
      * Получение списка всех расписаний
      * @return - Список из объектов расписания Schedule
      */
-    public List<Schedule> readAll(){
+    public List<Schedule> readList(){
         return scheduleRepository.findAll();
     }
 
-    /**
-     * Создание расписания
-     * @param university - ВУЗ
-     * @param faculty - Факультет
-     * @param group - Группа
-     * @param semester - Семестр
-     */
-    public Schedule create(String university, String faculty, String group, String semester){
+    public Schedule modify(Long id, ScheduleDto dto){
         Schedule schedule = new Schedule();
-        schedule.setUniversity(university);
-        schedule.setFaculty(faculty);
-        schedule.setGroupName(group);
-        schedule.setSemester(semester);
+        schedule.setId(id);
+        schedule.setUniversity(dto.getUniversity());
+        schedule.setFaculty(dto.getFaculty());
+        schedule.setGroupName(dto.getGroupName());
+        schedule.setSemester(dto.getSemester());
         schedule.setStart(LocalDate.now());
         scheduleRepository.save(schedule);
         return schedule;
