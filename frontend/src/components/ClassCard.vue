@@ -9,7 +9,7 @@
     <v-container class="fill-height" fluid>
         <v-row no-gutters class="primary--text">
           <v-col>
-            {{ lesson.type }}
+            {{ lesson.type.name }}
           </v-col>
           <v-spacer/>
           <v-col>
@@ -19,26 +19,26 @@
       <v-row class="flex-nowrap">
         <v-col cols="3">
           <div class="red--text">
-            {{ lesson.startTime }}
+            {{ lessonTimeBegin }}
           </div>
           <div class="green--text">
-            {{ lesson.endTime }}
+            {{ lessonTimeEnd }}
           </div>
         </v-col>
         <v-col v-ripple @click="goToSubjectInfo" cols="9">
-          {{ lesson.name }}
+          {{ lesson.discipline.name }}
         </v-col>
       </v-row>
       <v-row>
         <!-- Список преподов -->
         <v-list>
           <v-list-item
-            v-for="(name, i) in lesson.teachers"
+            v-for="(teacher, i) in lesson.teacherList"
             :key="i"
             class="black--text"
-            @click="goToTeacherInfo(name)"
+            @click="goToTeacherInfo(teacher)"
           >
-            <v-list-item-title> {{ name }} </v-list-item-title>
+            <v-list-item-title> {{ teacher.name }} </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-row>
@@ -57,17 +57,30 @@ export default {
     currentLesson () {
       console.log(this.lesson)
       return this.lesson
+    },
+    lessonTimeBegin () {
+      return this.lessonTimeSlice(this.lesson.time.begin)
+    },
+    lessonTimeEnd () {
+      return this.lessonTimeSlice(this.lesson.time.end)
     }
   },
   mounted () {
     console.log(this.lesson)
   },
   methods: {
-    goToTeacherInfo (teacherName) {
-      console.log('Went to teacher page: ' + teacherName)
+    goToTeacherInfo (teacher) {
+      console.log('Went to teacher page: ')
+      console.log(teacher)
     },
     goToSubjectInfo () {
       console.log('Went to subject')
+    },
+    lessonTimeSlice (timeString) {
+      if (timeString.split(':').length > 2) {
+        return timeString.slice(0, timeString.lastIndexOf(':'))
+      }
+      return timeString
     }
   }
 }

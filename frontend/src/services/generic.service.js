@@ -54,9 +54,7 @@ class GenericService {
     obj.schId = schedule.id
     console.log('Create params:')
     console.log(obj)
-    return axios.post(this.API_URL + '/create', obj.data, {
-      params: obj
-    })
+    return axios.post(this.API_URL + '/create', obj)
       .then(this.handleResponse)
       .then(response => {
         return Promise.resolve(response.data)

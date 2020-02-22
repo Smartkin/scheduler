@@ -5,17 +5,18 @@ import com.dvoeizlarza.scheduler.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("app/lesson")
+@RequestMapping("api/lesson")
 public class LessonController {
     LessonService lessonService;
 
     @PostMapping("create")
     @ResponseBody
-    void create(LessonDto dto){
+    void create(@RequestBody LessonDto dto){
         lessonService.create(dto);
     }
 
