@@ -5,6 +5,7 @@ import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.service.ScheduleService;
 import com.dvoeizlarza.scheduler.viewconverter.ScheduleViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,9 @@ public class ScheduleController {
 
     //CRud
     @PostMapping("create")
-    void create(@RequestBody ScheduleDto scheduleDto) {
+    ResponseEntity create(@RequestBody ScheduleDto scheduleDto) {
         scheduleService.create(scheduleDto);
+        return ResponseEntity.ok("Success");
     }
 
     @GetMapping

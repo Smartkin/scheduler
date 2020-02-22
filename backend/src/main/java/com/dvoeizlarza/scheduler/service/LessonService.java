@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class LessonService {
-    private ScheduleRepository scheduleRepository;
     private ScheduleService scheduleService;
     private DisciplineService disciplineService;
     private TeacherService teacherService;
@@ -29,12 +28,17 @@ public class LessonService {
     private LessonRepository lessonRepository;
     private LessonDateRepository lessonDateRepository;
 
+    private Schedule schedule;
     private Discipline discipline;
     private List<Teacher> teacherList;
     private Time time;
     private Type type;
 
     public Lesson create(LessonDto dto){
+        return modify(null, dto);
+    }
+
+    public Lesson modify(Long id, LessonDto dto){
         postValidate(dto);
         TDT tdt = new TDT();
         tdt.setDiscipline(discipline);
@@ -49,6 +53,7 @@ public class LessonService {
         }
 
         Lesson lesson = new Lesson();
+        lesson.setId(id);
         lesson.setTdt(tdt);
         lesson.setTime(time);
         lesson.setAuditorium(dto.getAuditory());
@@ -60,17 +65,17 @@ public class LessonService {
 
         for (LocalDate d: dto.getDates()){
             LessonDate lessonDate = new LessonDate();
+            lessonDate.setSchedule(schedule);
             lessonDate.setDate(d);
             lessonDate.setLesson(lesson);
             lessonDate.setLessonDateStatus(LessonDateStatus.Planned);
             lessonDateRepository.save(lessonDate);
         }
-
         return lesson;
     }
 
     private void postValidate(LessonDto dto){
-        Schedule schedule = scheduleService.read(dto.getSchId());
+        schedule = scheduleService.read(dto.getSchId());
         if(schedule==null){
             return;
         }

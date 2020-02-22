@@ -42,6 +42,7 @@ public class Init {
         TypeDto typeDto = new TypeDto(null, 1L, "Лекция");
         TimeDto timeDto = new TimeDto(null, 1L, "Первая пара", LocalTime.of(9,30), LocalTime.of(11, 5));
         LessonDto lessonDto = new LessonDto(WeekType.Any, DayOfWeek.MONDAY, LocalDate.of(2019,2,4), LocalDate.of(2020,4,30),null, 1L, teacherDtos, disciplineDto, typeDto, timeDto, "A-321", "");
+        lessonService.create(lessonDto);
     }
 
     @Autowired

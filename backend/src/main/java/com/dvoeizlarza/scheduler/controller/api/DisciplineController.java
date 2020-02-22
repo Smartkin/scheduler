@@ -6,6 +6,7 @@ import com.dvoeizlarza.scheduler.service.DisciplineService;
 import com.dvoeizlarza.scheduler.view.DisciplineView;
 import com.dvoeizlarza.scheduler.viewconverter.DisciplineViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +21,9 @@ public class DisciplineController {
 
     @PostMapping("create")
     @ResponseBody
-    DisciplineView create(@RequestBody DisciplineDto dto){
-        return disciplineViewConverter.convert(disciplineService.create(dto));
+    ResponseEntity create(@RequestBody DisciplineDto dto){
+        disciplineViewConverter.convert(disciplineService.create(dto));
+        return ResponseEntity.ok("Success");
     }
 
     @GetMapping
@@ -40,8 +42,9 @@ public class DisciplineController {
 
     @PostMapping("modify")
     @ResponseBody
-    DisciplineView modify(@RequestParam Long id, @RequestBody DisciplineDto dto){
-        return disciplineViewConverter.convert(disciplineService.modify(id, dto));
+    ResponseEntity modify(@RequestParam Long id, @RequestBody DisciplineDto dto){
+        disciplineViewConverter.convert(disciplineService.modify(id, dto));
+        return ResponseEntity.ok("Success");
     }
 
     @Autowired

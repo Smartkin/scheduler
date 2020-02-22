@@ -41,4 +41,6 @@ public class Schedule {
     private List<Type> types;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
     private List<Time> times;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
+    private List<LessonDate> lessonDates;
 }

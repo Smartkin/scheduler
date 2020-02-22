@@ -8,6 +8,7 @@ import com.dvoeizlarza.scheduler.view.DisciplineView;
 import com.dvoeizlarza.scheduler.view.TeacherView;
 import com.dvoeizlarza.scheduler.viewconverter.TeacherViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +22,11 @@ public class TeacherController {
 
     @PostMapping("create")
     @ResponseBody
-    String create(@RequestBody TeacherDto dto){
+    ResponseEntity create(@RequestBody TeacherDto dto){
             if (teacherService.create(dto) != null){
-                return "Success";
+                return ResponseEntity.ok("Success");
             }
-            return "Fail";
+            return (ResponseEntity) ResponseEntity.badRequest();
     }
 
     @GetMapping
@@ -43,8 +44,9 @@ public class TeacherController {
 
     @PostMapping("modify")
     @ResponseBody
-    TeacherView modify(@RequestParam Long id, @RequestBody TeacherDto dto){
-        return teacherViewConverter.convert(teacherService.modify(id, dto));
+    ResponseEntity modify(@RequestParam Long id, @RequestBody TeacherDto dto){
+        teacherViewConverter.convert(teacherService.modify(id, dto));
+        return ResponseEntity.ok("Success");
     }
 
     @Autowired

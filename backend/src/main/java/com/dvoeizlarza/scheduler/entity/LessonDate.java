@@ -26,6 +26,9 @@ public class LessonDate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LESSON_ID")
     private Lesson lesson;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="SCHEDULE_ID")
+    private Schedule schedule;
 
     // Атомарные атрибуты
     private LocalDate date;
