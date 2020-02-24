@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Setter
@@ -25,4 +26,26 @@ public class LessonDateView {
     private String auditorium;
     private List<NoteType> modifiedField;
     private String comment;
+
+    public static final Comparator<LessonDateView> COMPARE_BY_START = new Comparator<LessonDateView>() {
+        @Override
+        public int compare(LessonDateView lessonDateView, LessonDateView t1) {
+            if(lessonDateView.getDate().equals(t1.getDate()))
+            {
+                if(lessonDateView.getStart().equals(t1.getStart())){
+                    if(lessonDateView.getEnd().equals(t1.getEnd())){
+                        return 0;
+                    }
+                    else {
+                        return lessonDateView.getEnd().isAfter(t1.getEnd()) ? 1 : -1;
+                    }
+                }else {
+                    return lessonDateView.getStart().isAfter(t1.getStart()) ? 1 : -1;
+                }
+            }
+            else {
+                return lessonDateView.getDate().isAfter(t1.getDate())?1:-1;
+            }
+        }
+    };
 }

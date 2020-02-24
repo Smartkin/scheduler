@@ -59,10 +59,10 @@ public class LessonDateViewConverter implements Converter<LessonDate, LessonDate
                         view.setType(n.getValue());
                     break;
                 }
-                comment.append(n.getText());
+                comment.append(n.getText()).append(" {").append(n.getNoteType()).append(" = '").append(n.getValue()).append("'}\n");
             }
             view.setModifiedField(modifiedFields);
-            view.setComment(comment.toString());
+            view.setComment(comment.toString().trim());
         }
         return view;
     }

@@ -3,6 +3,7 @@ package com.dvoeizlarza.scheduler;
 import com.dvoeizlarza.scheduler.dto.*;
 import com.dvoeizlarza.scheduler.entity.*;
 import com.dvoeizlarza.scheduler.enums.CertificationType;
+import com.dvoeizlarza.scheduler.enums.NoteType;
 import com.dvoeizlarza.scheduler.enums.WeekType;
 import com.dvoeizlarza.scheduler.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class Init {
     TimeService timeService;
     @Autowired
     LessonService lessonService;
+    @Autowired
+    LessonDateService lessonDateService;
 
     @PostConstruct
     void init() {
@@ -41,8 +44,14 @@ public class Init {
         teacherDtos.add(teacherDto);
         TypeDto typeDto = new TypeDto(null, 1L, "Лекция");
         TimeDto timeDto = new TimeDto(null, 1L, "Первая пара", LocalTime.of(9,30), LocalTime.of(11, 5));
-        LessonDto lessonDto = new LessonDto(WeekType.Any, DayOfWeek.MONDAY, LocalDate.of(2019,2,4), LocalDate.of(2020,4,30),null, 1L, teacherDtos, disciplineDto, typeDto, timeDto, "A-321", "");
+        LessonDto lessonDto = new LessonDto(WeekType.Any, DayOfWeek.MONDAY, LocalDate.of(2020,2,4), LocalDate.of(2020,4,30),null, 1L, teacherDtos, disciplineDto, typeDto, timeDto, "A-321", "");
         lessonService.create(lessonDto);
+        NoteDto noteDto1 = new NoteDto(null, 2L, NoteType.Auditorium, "E-44", "Изменение аудитории");
+        lessonDateService.modify(noteDto1);
+        NoteDto noteDto2 = new NoteDto(null, 2L, NoteType.Discipline, "TEXT", "Теперь предмет капсом");
+        lessonDateService.modify(noteDto2);
+        NoteDto noteDto3 = new NoteDto(null, 2L, NoteType.Auditorium, "E-99", "Ещё раз аудиторию");
+        lessonDateService.modify(noteDto3);
     }
 
     @Autowired

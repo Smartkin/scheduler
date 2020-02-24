@@ -1,8 +1,10 @@
 package com.dvoeizlarza.scheduler.service;
 
+import com.dvoeizlarza.scheduler.dto.NoteDto;
 import com.dvoeizlarza.scheduler.entity.LessonDate;
 import com.dvoeizlarza.scheduler.entity.Note;
 import com.dvoeizlarza.scheduler.repository.LessonDateRepository;
+import com.dvoeizlarza.scheduler.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Service
 public class LessonDateService {
     private LessonDateRepository lessonDateRepository;
+    private NoteRepository noteRepository;
 
     public LessonDate read(Long id) {
         return lessonDateRepository.findById(id).orElse(null);
@@ -22,12 +25,24 @@ public class LessonDateService {
         return lessonDates;
     }
 
-    public Note modify(Long id) {
-        return null;
+    public Note modify(NoteDto dto) {
+        LessonDate lessonDate = read(dto.getLessonDate());
+        Note note = new Note();
+        note.setLessonDate(lessonDate);
+        note.setNoteType(dto.getNoteType());
+        note.setText(dto.getText());
+        note.setValue(dto.getValue());
+        noteRepository.save(note);
+        return note;
     }
 
     public LessonDate delete(Long id) {
         return null;
+    }
+
+    @Autowired
+    public void setNoteRepository(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
     }
 
     @Autowired

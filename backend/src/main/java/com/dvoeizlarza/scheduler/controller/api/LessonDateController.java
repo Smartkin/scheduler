@@ -32,7 +32,10 @@ public class LessonDateController {
     @ResponseBody
     List<LessonDateView> readList(@RequestParam Long schId, @RequestParam String date, @RequestParam int count){
         List<LessonDate> lessonDates = lessonDateService.readList(schId, LocalDate.parse(date), count);
-        return lessonDates.stream().map(lessonDateViewConverter::convert).collect(Collectors.toList());
+        return lessonDates.stream()
+                .map(lessonDateViewConverter::convert)
+                .sorted(LessonDateView.COMPARE_BY_START)
+                .collect(Collectors.toList());
     }
 
     @Autowired
