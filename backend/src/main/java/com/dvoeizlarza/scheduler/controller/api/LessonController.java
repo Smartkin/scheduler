@@ -2,14 +2,11 @@ package com.dvoeizlarza.scheduler.controller.api;
 
 import com.dvoeizlarza.scheduler.dto.LessonDto;
 import com.dvoeizlarza.scheduler.service.LessonService;
+import com.dvoeizlarza.scheduler.view.LessonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/lesson")
@@ -18,8 +15,21 @@ public class LessonController {
 
     @PostMapping("create")
     @ResponseBody
-    HttpEntity<String> create(@RequestBody LessonDto dto){
+    ResponseEntity<String> create(@RequestBody LessonDto dto) {
         lessonService.create(dto);
+        return ResponseEntity.ok("Success");
+    }
+
+    @GetMapping
+    @ResponseBody
+    LessonView read(Long id) {
+        return lessonService.read(id);
+    }
+
+    @PostMapping("modify")
+    @ResponseBody
+    ResponseEntity<String> modify(Long id, LessonDto dto) {
+        lessonService.modify(id, dto);
         return ResponseEntity.ok("Success");
     }
 

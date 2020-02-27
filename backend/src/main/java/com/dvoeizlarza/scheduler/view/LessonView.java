@@ -1,4 +1,4 @@
-package com.dvoeizlarza.scheduler.dto;
+package com.dvoeizlarza.scheduler.view;
 
 import com.dvoeizlarza.scheduler.enums.WeekType;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonDto {
+public class LessonView {
     private WeekType weekType;
     private DayOfWeek weekdays;
     private LocalDate startDate;
@@ -22,10 +22,10 @@ public class LessonDto {
     private List<LocalDate> dates;
 
     private Long schId;
-    private List<TeacherDto> teacherList;
-    private DisciplineDto discipline;
-    private TypeDto type;
-    private TimeDto time;
+    private List<Long> teacherList;
+    private Long discipline;
+    private Long type;
+    private Long time;
 
     private String auditory;
     private String comment;
