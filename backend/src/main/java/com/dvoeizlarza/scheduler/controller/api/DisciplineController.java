@@ -21,7 +21,7 @@ public class DisciplineController {
 
     @PostMapping("create")
     @ResponseBody
-    ResponseEntity create(@RequestBody DisciplineDto dto){
+    ResponseEntity<String> create(@RequestBody DisciplineDto dto){
         disciplineViewConverter.convert(disciplineService.create(dto));
         return ResponseEntity.ok("Success");
     }
@@ -42,7 +42,7 @@ public class DisciplineController {
 
     @PostMapping("modify")
     @ResponseBody
-    ResponseEntity modify(@RequestParam Long id, @RequestBody DisciplineDto dto){
+    ResponseEntity<String> modify(@RequestParam Long id, @RequestBody DisciplineDto dto){
         disciplineViewConverter.convert(disciplineService.modify(id, dto));
         return ResponseEntity.ok("Success");
     }

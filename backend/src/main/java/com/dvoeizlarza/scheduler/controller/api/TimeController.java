@@ -1,17 +1,15 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
-import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.dto.TimeDto;
 import com.dvoeizlarza.scheduler.entity.Time;
 import com.dvoeizlarza.scheduler.service.TimeService;
-import com.dvoeizlarza.scheduler.view.DisciplineView;
-import com.dvoeizlarza.scheduler.view.TimeView;
 import com.dvoeizlarza.scheduler.viewconverter.TimeViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalTime;
 import java.util.stream.Collectors;
 
 @Controller
@@ -22,8 +20,9 @@ public class TimeController {
 
     @PostMapping("create")
     @ResponseBody
-    TimeView create(@RequestBody TimeDto dto){
-        return timeViewConverter.convert(timeService.create(dto));
+    HttpEntity<String> create(@RequestBody TimeDto dto){
+        timeViewConverter.convert(timeService.create(dto));
+        return ResponseEntity.ok("Success");
     }
 
     @GetMapping
@@ -41,8 +40,9 @@ public class TimeController {
 
     @PostMapping("modify")
     @ResponseBody
-    TimeView modify(@RequestParam Long id, @RequestBody TimeDto dto){
-        return timeViewConverter.convert(timeService.modify(id, dto));
+    HttpEntity<String> modify(@RequestParam Long id, @RequestBody TimeDto dto){
+        timeViewConverter.convert(timeService.modify(id, dto));
+        return ResponseEntity.ok("Success");
     }
 
     @Autowired

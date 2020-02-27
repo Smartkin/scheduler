@@ -15,9 +15,8 @@ public class ScheduleController {
     private ScheduleService scheduleService;
     private ScheduleViewConverter scheduleViewConverter;
 
-    //CRud
     @PostMapping("create")
-    ResponseEntity create(@RequestBody ScheduleDto scheduleDto) {
+    ResponseEntity<String> create(@RequestBody ScheduleDto scheduleDto) {
         scheduleService.create(scheduleDto);
         return ResponseEntity.ok("Success");
     }
@@ -30,6 +29,13 @@ public class ScheduleController {
         }
         Schedule schedule = scheduleService.read(id);
         return scheduleViewConverter.convert(schedule);
+    }
+
+    @PostMapping("modify")
+    @ResponseBody
+    ResponseEntity<String> modify(Long id, ScheduleDto dto) {
+        scheduleViewConverter.convert(scheduleService.modify(id, dto));
+        return ResponseEntity.ok("Success");
     }
 
     @Autowired

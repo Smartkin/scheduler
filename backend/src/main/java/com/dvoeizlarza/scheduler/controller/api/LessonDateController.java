@@ -1,6 +1,5 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
-import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.dto.NoteDto;
 import com.dvoeizlarza.scheduler.entity.LessonDate;
 import com.dvoeizlarza.scheduler.service.LessonDateService;
@@ -39,7 +38,7 @@ public class LessonDateController {
 
     @PostMapping("modify")
     @ResponseBody
-    ResponseEntity modify(@RequestParam Long id, @RequestBody NoteDto dto){
+    ResponseEntity<String> modify(@RequestParam Long id, @RequestBody NoteDto dto){
         lessonDateService.modify(dto);
         return ResponseEntity.ok("Success");
     }

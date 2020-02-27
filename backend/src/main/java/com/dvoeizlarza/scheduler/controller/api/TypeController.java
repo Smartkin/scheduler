@@ -5,6 +5,8 @@ import com.dvoeizlarza.scheduler.entity.Type;
 import com.dvoeizlarza.scheduler.service.TypeService;
 import com.dvoeizlarza.scheduler.viewconverter.TypeViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,9 @@ public class TypeController {
 
     @PostMapping("create")
     @ResponseBody
-    void create(@RequestBody TypeDto dto) {
+    HttpEntity<String> create(@RequestBody TypeDto dto) {
         typeService.create(dto);
+        return ResponseEntity.ok("Success");
     }
 
     @GetMapping
@@ -34,6 +37,13 @@ public class TypeController {
     Object readList(@RequestParam Long schId){
         List<Type> types = typeService.readList(schId);
         return types.stream().map(typeViewConverter::convert);
+    }
+
+    @PostMapping("modify")
+    @ResponseBody
+    HttpEntity<String> modify(@RequestParam Long id, @RequestBody TypeDto dto){
+        typeViewConverter.convert(typeService.modify(id, dto));
+        return ResponseEntity.ok("Success");
     }
 
     @Autowired

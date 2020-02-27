@@ -1,11 +1,8 @@
 package com.dvoeizlarza.scheduler.controller.api;
 
-import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.dto.TeacherDto;
 import com.dvoeizlarza.scheduler.entity.Teacher;
 import com.dvoeizlarza.scheduler.service.TeacherService;
-import com.dvoeizlarza.scheduler.view.DisciplineView;
-import com.dvoeizlarza.scheduler.view.TeacherView;
 import com.dvoeizlarza.scheduler.viewconverter.TeacherViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +19,11 @@ public class TeacherController {
 
     @PostMapping("create")
     @ResponseBody
-    ResponseEntity create(@RequestBody TeacherDto dto){
+    ResponseEntity<String> create(@RequestBody TeacherDto dto){
             if (teacherService.create(dto) != null){
                 return ResponseEntity.ok("Success");
             }
-            return (ResponseEntity) ResponseEntity.badRequest();
+            return ResponseEntity.badRequest().build();
     }
 
     @GetMapping
@@ -44,7 +41,7 @@ public class TeacherController {
 
     @PostMapping("modify")
     @ResponseBody
-    ResponseEntity modify(@RequestParam Long id, @RequestBody TeacherDto dto){
+    ResponseEntity<String> modify(@RequestParam Long id, @RequestBody TeacherDto dto){
         teacherViewConverter.convert(teacherService.modify(id, dto));
         return ResponseEntity.ok("Success");
     }

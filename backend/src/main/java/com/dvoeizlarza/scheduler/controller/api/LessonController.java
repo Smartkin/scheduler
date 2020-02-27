@@ -3,6 +3,8 @@ package com.dvoeizlarza.scheduler.controller.api;
 import com.dvoeizlarza.scheduler.dto.LessonDto;
 import com.dvoeizlarza.scheduler.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +18,9 @@ public class LessonController {
 
     @PostMapping("create")
     @ResponseBody
-    void create(@RequestBody LessonDto dto){
+    HttpEntity<String> create(@RequestBody LessonDto dto){
         lessonService.create(dto);
+        return ResponseEntity.ok("Success");
     }
 
     @Autowired
