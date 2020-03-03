@@ -4,17 +4,19 @@ import com.dvoeizlarza.scheduler.dto.*;
 import com.dvoeizlarza.scheduler.entity.*;
 import com.dvoeizlarza.scheduler.enums.CertificationType;
 import com.dvoeizlarza.scheduler.enums.NoteType;
+import com.dvoeizlarza.scheduler.enums.Role;
 import com.dvoeizlarza.scheduler.enums.WeekType;
+import com.dvoeizlarza.scheduler.repository.UsrRepository;
 import com.dvoeizlarza.scheduler.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class Init {
@@ -32,6 +34,10 @@ public class Init {
     LessonService lessonService;
     @Autowired
     LessonDateService lessonDateService;
+    @Autowired
+    UsrRepository usrRepository;
+    @Autowired
+    BCryptPasswordEncoder passwordEncoder;
 
     @PostConstruct
     void init() {
@@ -52,6 +58,11 @@ public class Init {
         lessonDateService.modify(noteDto2);
         NoteDto noteDto3 = new NoteDto(null, 2L, NoteType.Auditorium, "E-99", "Ещё раз аудиторию");
         lessonDateService.modify(noteDto3);
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ROLE_USER);
+        USR a_sey = new USR(null, "a-sey", passwordEncoder.encode("USER"), true, roles, null, null);
+        usrRepository.save(a_sey);
     }
 
     @Autowired

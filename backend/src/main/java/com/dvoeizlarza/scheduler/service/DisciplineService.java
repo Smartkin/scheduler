@@ -4,13 +4,14 @@ import com.dvoeizlarza.scheduler.dto.DisciplineDto;
 import com.dvoeizlarza.scheduler.entity.Discipline;
 import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.repository.DisciplineRepository;
+import com.dvoeizlarza.scheduler.view.DisciplineView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class DisciplineService implements CRLUD{
+public class DisciplineService implements CRLUD<Discipline, DisciplineDto> {
     private ScheduleService scheduleService;
     private DisciplineRepository disciplineRepository;
 
@@ -59,7 +60,7 @@ public class DisciplineService implements CRLUD{
         return discipline;
     }
 
-    public Object delete(Long id) {
+    public Discipline delete(Long id) {
         return null;
     }
 

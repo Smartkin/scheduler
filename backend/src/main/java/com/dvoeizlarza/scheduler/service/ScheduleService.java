@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class ScheduleService {
+public class ScheduleService implements CRLUD<Schedule, ScheduleDto> {
     private ScheduleRepository scheduleRepository;
 
     /**
@@ -33,6 +33,10 @@ public class ScheduleService {
      * Получение списка всех расписаний
      * @return - Список из объектов расписания Schedule
      */
+    public List<Schedule> readList(Long schId){
+        return readList();
+    }
+
     public List<Schedule> readList(){
         return scheduleRepository.findAll();
     }
@@ -47,6 +51,10 @@ public class ScheduleService {
         schedule.setStart(LocalDate.now());
         scheduleRepository.save(schedule);
         return schedule;
+    }
+
+    public Schedule delete(Long id) {
+        return null;
     }
 
     @Autowired

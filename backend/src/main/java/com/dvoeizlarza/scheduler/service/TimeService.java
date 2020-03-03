@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TimeService {
+public class TimeService implements CRLUD<Time, TimeDto> {
     private TimeRepository timeRepository;
     private ScheduleService scheduleService;
 

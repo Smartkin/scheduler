@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TypeService {
+public class TypeService implements CRLUD<Type, TypeDto> {
     private TypeRepository typeRepository;
     private ScheduleService scheduleService;
 

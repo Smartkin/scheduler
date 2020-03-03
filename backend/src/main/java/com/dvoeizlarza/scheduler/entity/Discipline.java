@@ -32,4 +32,6 @@ public class Discipline {
     // Зависимости
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "discipline")
     private List<TDT> tdts;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "discipline")
+    private List<Homework> homework;
 }
