@@ -12,7 +12,7 @@ export const schedule = {
     set ({ commit }, id) {
       return ScheduleService.get(id).then(
         schedule => {
-          commit('setSuccess')
+          commit('setSuccess', schedule)
           localStorage.setItem('schedule', JSON.stringify(schedule))
           return Promise.resolve()
         },
@@ -21,14 +21,20 @@ export const schedule = {
           return Promise.reject(error)
         }
       )
+    },
+    directSet ({ commit }, schedule) {
+      console.log('Called direct set')
+      commit('setSuccess', schedule)
+      localStorage.setItem('schedule', JSON.stringify(schedule))
     }
   },
   mutations: {
     setSuccess (state, schedule) {
-      state.schedule = schedule
+      console.log(schedule)
+      state.sch = schedule
     },
     setFail (state) {
-      state.schedule = null
+      state.sch = null
     }
   }
 }

@@ -8,6 +8,7 @@ import Teachers from '../views/Teachers'
 import CreateTeacher from '../views/CreateTeacher'
 import Teacher from '../views/Teacher'
 import ModifyTeacher from '../views/ModifyTeacher'
+import CreateSchedule from '../views/CreateSchedule'
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,11 @@ const routes = [
     path: '/create_lesson',
     name: 'create_lesson',
     component: CreateLesson
+  },
+  {
+    path: '/create_schedule',
+    name: 'create_schedule',
+    component: CreateSchedule
   },
   {
     path: '/teachers',

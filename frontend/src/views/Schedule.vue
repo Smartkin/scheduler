@@ -56,6 +56,16 @@ export default {
   components: {
     ClassCard
   },
+  computed: {
+    currentSchedule () {
+      return this.$store.state.schedule.sch
+    }
+  },
+  watch: {
+    currentSchedule: function () {
+      this.getLessons()
+    }
+  },
   mounted () {
     if (this.test) {
       // Тестовые данные
@@ -111,19 +121,15 @@ export default {
       let date = new Date(this.selectedDate.valueOf())
       date.setDate(date.getDate() - 1)
       this.selectedDate = date
-      let curDate = this.selectedDate.toISOString()
-      LessonDateService.get(null, {
-        schId: this.id,
-        date: curDate.slice(0, curDate.indexOf('T')),
-        count: 1
-      }).then(lessons => {
-        this.lessons = lessons
-      })
+      this.getLessons()
     },
     nextDay () {
       let date = new Date(this.selectedDate.valueOf())
       date.setDate(date.getDate() + 1)
       this.selectedDate = date
+      this.getLessons()
+    },
+    getLessons () {
       let curDate = this.selectedDate.toISOString()
       LessonDateService.get(null, {
         schId: this.id,

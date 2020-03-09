@@ -30,6 +30,7 @@ class GenericService {
           schId: schedule.id
         } : customParams
         console.log('Object list request')
+        console.log(params)
         return axios.get(this.API_URL + '/list', {
           params: params
         })
@@ -51,14 +52,15 @@ class GenericService {
   }
 
   modify (id, obj) {
+    let appendLink = !id ? '/create' : '/modify'
     let schedule = JSON.parse(localStorage.getItem('schedule'))
     if (!schedule) {
       return Promise.reject(Error('Не было выбрано расписание!'))
     }
     obj.schId = schedule.id
-    console.log('Modify params:')
+    console.log(appendLink + ' params:')
     console.log(obj)
-    return axios.post(this.API_URL + '/modify', obj, {
+    return axios.post(this.API_URL + appendLink, obj, {
       params: {
         id: id
       }

@@ -66,9 +66,7 @@ export default {
     }
   },
   mounted () {
-    ScheduleService.get().then(schedules => {
-      this.schedules = schedules
-    })
+    this.getNewSchedules()
   },
   computed: {
     resultDrawer: {
@@ -79,6 +77,9 @@ export default {
         this.currentDrawer = newDrawer
         this.$emit('drawer-change', newDrawer)
       }
+    },
+    updateSchedules () {
+      return this.$store.state.data.schedulesDataUpdate
     }
   },
   props: {
@@ -87,15 +88,30 @@ export default {
       required: true
     }
   },
+  watch: {
+    updateSchedules: function (newUpdate) {
+      if (newUpdate) {
+        this.getNewSchedules()
+        this.$store.dispatch('data/resetUpdatedSchedulesData')
+      }
+    }
+  },
   methods: {
     onScheduleChoice (schedule) {
       let curSchedule = this.$store.state.schedule.sch
+      console.log(curSchedule)
+      console.log(schedule)
       if (curSchedule.id !== schedule.id) {
-        this.$store.dispatch('schedule/set', schedule.id)
+        this.$store.dispatch('schedule/directSet', schedule)
       }
       if (this.$router.currentRoute.path !== '/schedule/' + schedule.id) {
         this.$router.push('/schedule/' + schedule.id)
       }
+    },
+    getNewSchedules () {
+      ScheduleService.get().then(schedules => {
+        this.schedules = schedules
+      })
     }
   }
 }
