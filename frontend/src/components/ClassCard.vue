@@ -9,11 +9,11 @@
     <v-container class="fill-height" fluid>
         <v-row no-gutters class="primary--text">
           <v-col>
-            {{ lesson.type.name }}
+            {{ lesson.type }}
           </v-col>
           <v-spacer/>
           <v-col>
-            {{ lesson.auditory }}
+            {{ lesson.auditorium }}
           </v-col>
         </v-row>
       <v-row class="flex-nowrap">
@@ -26,19 +26,19 @@
           </div>
         </v-col>
         <v-col v-ripple @click="goToSubjectInfo" cols="9">
-          {{ lesson.discipline.name }}
+          {{ lesson.discipline }}
         </v-col>
       </v-row>
       <v-row>
         <!-- Список преподов -->
         <v-list>
           <v-list-item
-            v-for="(teacher, i) in lesson.teacherList"
+            v-for="(teacher, i) in lesson.teachers"
             :key="i"
             class="black--text"
             @click="goToTeacherInfo(teacher)"
           >
-            <v-list-item-title> {{ teacher.name }} </v-list-item-title>
+            <v-list-item-title> {{ teacher }} </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-row>
@@ -59,10 +59,10 @@ export default {
       return this.lesson
     },
     lessonTimeBegin () {
-      return this.lessonTimeSlice(this.lesson.time.begin)
+      return this.lessonTimeSlice(this.lesson.start)
     },
     lessonTimeEnd () {
-      return this.lessonTimeSlice(this.lesson.time.end)
+      return this.lessonTimeSlice(this.lesson.end)
     }
   },
   mounted () {

@@ -8,13 +8,13 @@ class GenericService {
     this.API_URL = apiStr
   }
 
-  get (id = null) {
+  get (id = null, customParams = null) {
     let schedule = JSON.parse(localStorage.getItem('schedule'))
     if (schedule) {
       if (id) {
-        let params = {
+        let params = !customParams ? {
           id: id
-        }
+        } : customParams
         return axios.get(this.API_URL, {
           params: params
         })
@@ -26,9 +26,9 @@ class GenericService {
             return Promise.reject(error)
           })
       } else {
-        let params = {
+        let params = !customParams ? {
           schId: schedule.id
-        }
+        } : customParams
         console.log('Object list request')
         return axios.get(this.API_URL + '/list', {
           params: params

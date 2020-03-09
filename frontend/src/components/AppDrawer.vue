@@ -44,24 +44,31 @@
       <v-list-item
         v-for="(schedule, i) in schedules"
         :key="i"
-        to="/schedule"
+        @click="onScheduleChoice(schedule)"
         v-ripple
       >
-        {{ schedule.name }}
+        {{ schedule.groupName }}
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
+import ScheduleService from '../services/schedule.service'
+
 export default {
   data () {
     return {
       currentDrawer: false,
       schedules: [{
-        name: 'БСТ1602'
+        groupName: 'БСТ1602'
       }]
     }
+  },
+  mounted () {
+    ScheduleService.get().then(schedules => {
+      this.schedules = schedules
+    })
   },
   computed: {
     resultDrawer: {
@@ -78,6 +85,17 @@ export default {
     drawer: {
       type: Boolean,
       required: true
+    }
+  },
+  methods: {
+    onScheduleChoice (schedule) {
+      let curSchedule = this.$store.state.schedule.sch
+      if (curSchedule.id !== schedule.id) {
+        this.$store.dispatch('schedule/set', schedule.id)
+      }
+      if (this.$router.currentRoute.path !== '/schedule/' + schedule.id) {
+        this.$router.push('/schedule/' + schedule.id)
+      }
     }
   }
 }

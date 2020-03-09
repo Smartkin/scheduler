@@ -23,9 +23,10 @@ const routes = [
     component: () => import('../views/About.vue')
   },
   {
-    path: '/schedule',
+    path: '/schedule/:id',
     name: 'schedule',
-    component: Schedule
+    component: Schedule,
+    props: true
   },
   {
     path: '/create_lesson',

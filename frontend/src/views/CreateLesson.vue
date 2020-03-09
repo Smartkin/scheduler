@@ -13,7 +13,7 @@
               </v-card-title>
               <class-card
                 class="mx-auto"
-                :lesson="newLesson"
+                :lesson="previewLesson"
               />
             </v-card>
           </v-col>
@@ -408,6 +408,23 @@ export default {
         this.lessonTypes = typeNames
         this.lessonTypes.push('Создать')
       })
+    }
+  },
+  computed: {
+    previewLesson () {
+      let teacherNames = []
+      this.newLesson.teacherList.forEach(teacher => {
+        teacherNames.push(teacher.name)
+      })
+      return {
+        start: this.newLesson.time.begin,
+        end: this.newLesson.time.end,
+        discipline: this.newLesson.discipline.name,
+        type: this.newLesson.type.name,
+        teachers: teacherNames,
+        auditorium: this.newLesson.auditory,
+        comment: this.newLesson.comment
+      }
     }
   },
   methods: {
