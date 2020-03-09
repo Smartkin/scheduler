@@ -15,7 +15,7 @@
               <v-text-field
                 label="ФИО преподавателя"
                 counter="255"
-                v-model="newTeacher.name"
+                v-model="editTeacher.name"
                 :error-messages="errors"
               />
             </validation-provider>
@@ -26,7 +26,7 @@
               <v-textarea
                 label="Информация"
                 counter="1024"
-                v-model="newTeacher.info"
+                v-model="editTeacher.info"
                 :error-messages="errors"
                 filled
                 auto-grow
@@ -35,9 +35,9 @@
             <v-btn
               block
               :disabled="invalid"
-              @click="passes(createTeacher)"
+              @click="passes(modifyTeacher)"
             >
-              Создать
+              Сохранить
             </v-btn>
             <v-alert
               type="error"
@@ -62,10 +62,10 @@ import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import BackButton from '../components/BackButton'
 
 export default {
-  name: 'create-teacher',
+  name: 'modify-teacher',
   data () {
     return {
-      newTeacher: {
+      editTeacher: {
         name: '',
         info: ''
       },
@@ -73,14 +73,24 @@ export default {
       showError: false
     }
   },
+  props: {
+    id: {
+      required: true
+    }
+  },
   components: {
     BackButton,
     ValidationObserver,
     ValidationProvider
   },
+  mounted () {
+    TeacherService.get(this.id).then(teacher => {
+      this.editTeacher = teacher
+    })
+  },
   methods: {
-    createTeacher () {
-      TeacherService.create(this.newTeacher).then(() => {
+    modifyTeacher () {
+      TeacherService.modify(this.id, this.editTeacher).then(() => {
         this.$router.push('/teachers')
       }, error => {
         console.error(error)

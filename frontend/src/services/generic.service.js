@@ -47,14 +47,22 @@ class GenericService {
   }
 
   create (obj) {
+    return this.modify(null, obj)
+  }
+
+  modify (id, obj) {
     let schedule = JSON.parse(localStorage.getItem('schedule'))
     if (!schedule) {
       return Promise.reject(Error('Не было выбрано расписание!'))
     }
     obj.schId = schedule.id
-    console.log('Create params:')
+    console.log('Modify params:')
     console.log(obj)
-    return axios.post(this.API_URL + '/create', obj)
+    return axios.post(this.API_URL + '/modify', obj, {
+      params: {
+        id: id
+      }
+    })
       .then(this.handleResponse)
       .then(response => {
         return Promise.resolve(response.data)

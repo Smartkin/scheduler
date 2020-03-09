@@ -7,6 +7,7 @@ import goTo from 'vuetify/lib/services/goto'
 import Teachers from '../views/Teachers'
 import CreateTeacher from '../views/CreateTeacher'
 import Teacher from '../views/Teacher'
+import ModifyTeacher from '../views/ModifyTeacher'
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,12 @@ const routes = [
     path: '/teacher/:id',
     name: 'teacher',
     component: Teacher,
+    props: true
+  },
+  {
+    path: '/teacher/:id/modify',
+    name: 'teacher_modify',
+    component: ModifyTeacher,
     props: true
   }
 ]
