@@ -37,7 +37,7 @@ public class DisciplineController {
     @ResponseBody
     List<DisciplineView> readList(@RequestParam Long schId){
         List<Discipline> disciplines = disciplineService.readList(schId);
-        return disciplines.stream().map(disciplineViewConverter::convert).collect(Collectors.toList());
+        return disciplines.stream().map(disciplineViewConverter::convert).sorted(DisciplineView.COMPARE_BY_NAME).collect(Collectors.toList());
     }
 
     @PostMapping("modify")

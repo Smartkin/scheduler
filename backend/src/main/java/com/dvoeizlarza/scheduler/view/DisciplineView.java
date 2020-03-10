@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Setter
@@ -21,4 +22,8 @@ public class DisciplineView {
     private String shortName;
     private CertificationType certificationType;
     private List<Long> tdts;
+
+    public static final Comparator<DisciplineView> COMPARE_BY_NAME = (disciplineView, t1) -> {
+        return disciplineView.getName().compareTo(t1.getName());
+    };
 }
