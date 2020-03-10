@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="requestsDone" fluid>
-<!--    {{ lesson }}-->
+    {{ lesson }}
     <v-row>
       <v-col>
         <back-button/>

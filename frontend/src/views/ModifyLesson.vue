@@ -1,8 +1,14 @@
 <template>
   <validation-observer
-    id="create-lesson"
+    v-if="requestsDone"
+    id="modify-lesson"
     v-slot="{ invalid, passes }"
   >
+    <v-row>
+      <v-col class="ml-3">
+        <back-button/>
+      </v-col>
+    </v-row>
     <v-form>
       <v-container fluid>
         <v-row>
@@ -30,7 +36,6 @@
                 :items="lessonRepeatType"
                 label="Тип недели"
                 :error-messages="errors"
-                @input="onWeekTypeChanged"
               />
             </validation-provider>
 <!--       Выбор дат проведения занятий     -->
@@ -39,23 +44,23 @@
               name="период"
               vid="lessonPeriod"
               :rules="{}"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
-                v-model="newLesson.dates"
+                v-model="editLesson.dates"
                 range
                 full-width
                 reactive
                 first-day-of-week="1"
                 :readonly="readOnlyCalendar"
-              />
+              >
+                Период проведения занятия
+              </v-date-picker>
             </validated-expand-field>
             <validated-expand-field
               :condition="weekType && weekType !== 'Определённые даты'"
               name="даты семестра"
               vid="useSemesterDates"
               :rules="{}"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-checkbox
                 v-model="useSemesterDates"
@@ -68,19 +73,19 @@
               name="даты"
               vid="lessonDates"
               :rules="{}"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
-                v-model="newLesson.dates"
+                v-model="editLesson.dates"
                 first-day-of-week="1"
                 multiple
                 full-width
-              />
+              >
+                Даты занятий
+              </v-date-picker>
             </validated-expand-field>
             <validated-expand-field
               :condition="weekType && weekType !== 'Определённые даты'"
               name="день недели"
-              @autoscroll="onValidateAutoscroll"
               vid="dayOfTheWeek"
             >
               <v-label>День недели</v-label>
@@ -89,18 +94,16 @@
               </v-radio-group>
             </validated-expand-field>
             <validated-expand-field
-              :condition="newLesson.dates.length !== 0 || dayOfTheWeekChoice !== ''"
+              :condition="editLesson.dates.length !== 0 || dayOfTheWeekChoice !== ''"
               v-slot="{ errors }"
               name="тип пары"
               vid="lessonTypeStr"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-select
                 v-model="customType"
                 :items="lessonTypes"
                 label="Тип пары"
                 :error-messages="errors"
-                @input="onLessonTypeChanged"
               />
             </validated-expand-field>
             <validated-expand-field
@@ -109,35 +112,31 @@
               rules="required|min:1|max:255"
               v-slot="{ errors }"
               vid="lessonTypeStringField"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-text-field
                 counter="255"
                 label="Название типа пары"
                 :error-messages="errors"
-                v-model="newLesson.type.name"
+                v-model="editLesson.type.name"
               />
             </validated-expand-field>
             <validated-expand-field
               name="время пары"
-              :condition="newLesson.type && (newLesson.type.name !== '' || newLesson.type.name.length >= 1)"
+              :condition="editLesson.type && (editLesson.type.name !== '' || editLesson.type.name.length >= 1)"
               v-slot="{ errors }"
               vid="lessonTimes"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-select
                 v-model="customTimes"
                 :items="lessonTimes"
                 label="Время пары"
                 :error-messages="errors"
-                @input="onLessonTimesChanged"
               />
             </validated-expand-field>
 <!--        Создание новой пары времени для пар    -->
             <conditional-expand-field
               :condition="customTimes === 'Создать'"
               vid="lessonCustomTimes"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-row>
                 <v-col cols="12">
@@ -151,7 +150,7 @@
                       counter="255"
                       label="Название пары времён"
                       :error-messages="errors"
-                      v-model="newLesson.time.name"
+                      v-model="editLesson.time.name"
                     />
                   </conditional-validation>
                 </v-col>
@@ -169,7 +168,6 @@
                       format="24hr"
                       v-model="startTime"
                       :max="endTime"
-                      @input="onLessonStartTimeChanged"
                     />
                     <v-alert
                       dismissible
@@ -195,7 +193,6 @@
                       format="24hr"
                       v-model="endTime"
                       :min="startTime"
-                      @input="onLessonEndTimeChanged"
                     />
                     <v-alert
                       dismissible
@@ -211,18 +208,16 @@
             </conditional-expand-field>
 <!--        Список преводавателей    -->
             <validated-expand-field
-              :condition="newLesson.time.begin && newLesson.time.end"
+              :condition="editLesson.time.begin && editLesson.time.end"
               name="список преподавателей"
               v-slot="{ errors }"
               vid="lessonTeachers"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-select
                 v-model="selectedTeachers"
                 multiple
                 label="Список преподавателей"
                 :items="teachers"
-                @input="onLessonTeachersChanged"
                 :error-messages="errors"
               />
             </validated-expand-field>
@@ -233,14 +228,12 @@
               rules="required|min:1|max:255"
               v-slot="{ errors }"
               vid="newTeacherName"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-text-field
                 counter="255"
                 label="ФИО преподавателя"
                 v-model="newTeacher"
                 :error-messages="errors"
-                @input="onNewTeacherChanged"
               />
             </validated-expand-field>
 <!--        Создание дисциплин    -->
@@ -249,13 +242,11 @@
               name="название предмета"
               v-slot="{ errors }"
               vid="lessonSubjects"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-select
                 v-model="customSubject"
                 :items="disciplines"
                 label="Название предмета"
-                @input="onLessonSubjectChanged"
                 :error-messages="errors"
               />
             </validated-expand-field>
@@ -265,28 +256,26 @@
               rules="required|min:1|max:255"
               v-slot="{ errors }"
               vid="lessonCustomSubject"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-text-field
                 counter="255"
                 label="Название предмета"
-                v-model="newLesson.discipline.name"
+                v-model="editLesson.discipline.name"
                 :error-messages="errors"
               />
             </validated-expand-field>
 <!--        Аудитория    -->
             <validated-expand-field
-              :condition="newLesson.discipline.name !== ''"
+              :condition="editLesson.discipline.name !== ''"
               rules="required|min:1|max:255"
               name="аудитория"
               v-slot="{ errors }"
               vid="lessonAuditory"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-text-field
                 counter="255"
                 label="Аудитория"
-                v-model="newLesson.auditory"
+                v-model="editLesson.auditory"
                 :error-messages="errors"
               />
             </validated-expand-field>
@@ -296,10 +285,9 @@
               name="комментарий"
               v-slot="{ errors }"
               vid="lessonComment"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-textarea
-                v-model="newLesson.comment"
+                v-model="editLesson.comment"
                 label="Комментарий"
                 filled
                 auto-grow
@@ -311,14 +299,13 @@
             <conditional-expand-field
               :condition="!invalid"
               vid="lessonCreateButton"
-              @autoscroll="onValidateAutoscroll"
             >
               <v-btn
                 block
                 :disabled="invalid"
-                @click="passes(createLesson)"
+                @click="passes(modifyLesson)"
               >
-                Создать
+                Сохранить
               </v-btn>
             </conditional-expand-field>
           </v-col>
@@ -334,28 +321,31 @@ import ClassCard from '../components/ClassCard'
 import ValidatedExpandField from '../components/ValidatedExpandField'
 import ConditionalExpandField from '../components/ConditionalExpandField'
 import ConditionalValidation from '../components/ConditionalValidation'
-import TeacherService from '../services/teacher.service'
+import BackButton from '../components/BackButton'
+import LessonService from '../services/lesson.service'
 import DisciplineService from '../services/discipline.service'
 import TimeService from '../services/time.service'
 import TypeService from '../services/type.service'
-import LessonService from '../services/lesson.service'
+import TeacherService from '../services/teacher.service'
 
 export default {
-  name: 'create-lesson',
+  name: 'modify-lesson',
   data () {
     return {
       lessonRepeatType: ['Каждую', 'Чётные', 'Нечётные', 'Определённые даты'],
       lessonDays: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
-      lessonTypes: ['Лекция', 'Практика', 'Лабораторные работы', 'Создать'],
-      lessonTimes: ['9:30-11:05', '11:15-12:50', '13:00-14:35', '15:00-16:30', 'Создать'],
-      teachers: ['Гадасин Д. В.', 'Беленькая М. Н.', 'Создать'],
-      disciplines: ['Технологии и средства облачных сервисов', 'Создать'],
+      lessonTypes: [],
+      lessonTimes: [],
+      teachers: [],
+      disciplines: [],
       customType: '',
       weekType: '',
       customTimes: '',
       customSubject: '',
       startTime: null,
       endTime: null,
+      requestsFinished: [],
+      requestsDone: false,
       addTeachersField: false,
       readOnlyCalendar: false,
       selectedTeachers: [],
@@ -365,7 +355,7 @@ export default {
       fetchedBackEndData: {},
       useSemesterDates: false,
       currentSchedule: this.$store.state.schedule.sch,
-      newLesson: {
+      editLesson: {
         schId: null,
         weekType: '',
         dates: [],
@@ -392,11 +382,16 @@ export default {
         weekdays: 0,
         startDate: null,
         endDate: null
-      },
-      test: false // Флаг на осуществление тестирования с тестовыми данными
+      }
+    }
+  },
+  props: {
+    id: {
+      required: true
     }
   },
   components: {
+    BackButton,
     ConditionalValidation,
     ConditionalExpandField,
     ValidatedExpandField,
@@ -405,13 +400,78 @@ export default {
     ValidationProvider
   },
   mounted () {
-    if (!this.test) {
+    this.getBackendData()
+    let lessonServiceReqId = this.awaitRequest()
+    LessonService.get(this.id).then(lesson => {
+      this.editLesson = lesson
+      this.editLesson.weekType = this.translateWeekType(this.editLesson.weekType)
+      this.weekType = this.editLesson.weekType
+      this.dayOfTheWeekChoice = this.getWeekdayNum(this.editLesson.weekdays)
+      this.editLesson.dates = this.getDates(this.weekType)
+      let disServiceReqId = this.awaitRequest()
+      DisciplineService.get(lesson.discipline).then(discipline => {
+        this.editLesson.discipline = discipline
+        this.customSubject = discipline.name
+        this.finishRequest(disServiceReqId)
+      })
+      let timeServReqId = this.awaitRequest()
+      TimeService.get(lesson.time).then(time => {
+        this.editLesson.time = time
+        this.customTimes = this.editLesson.time.name
+        this.finishRequest(timeServReqId)
+      })
+      let typeServReqId = this.awaitRequest()
+      TypeService.get(lesson.type).then(type => {
+        this.editLesson.type = type
+        this.customType = this.editLesson.type.name
+        this.finishRequest(typeServReqId)
+      })
+      let teachers = []
+      let teacherServReqId = this.awaitRequest()
+      for (let teachId of this.editLesson.teacherList) {
+        TeacherService.get(teachId).then(teacher => {
+          teachers.push(teacher)
+          this.selectedTeachers.push(teacher.name)
+          if (teachers.length === this.editLesson.teacherList.length) {
+            this.editLesson.teacherList = teachers
+            this.displayTeachers = this.editLesson.teacherList
+            this.finishRequest(teacherServReqId)
+          }
+        })
+      }
+      this.finishRequest(lessonServiceReqId)
+    })
+  },
+  computed: {
+    previewLesson () {
+      let teacherNames = []
+      this.editLesson.teacherList.forEach(teacher => {
+        teacherNames.push(teacher.name)
+      })
+      return {
+        start: this.editLesson.time.begin,
+        end: this.editLesson.time.end,
+        discipline: this.editLesson.discipline.name,
+        type: this.editLesson.type.name,
+        teachers: teacherNames,
+        auditorium: this.editLesson.auditory,
+        comment: this.editLesson.comment
+      }
+    }
+  },
+  methods: {
+    getBackendData () {
+      let tsRID = this.awaitRequest()
+      let dsRID = this.awaitRequest()
+      let tisRID = this.awaitRequest()
+      let tysRID = this.awaitRequest()
       TeacherService.get().then(teachers => {
         let teacherNames = []
         this.fetchedBackEndData.teachers = teachers
         teachers.forEach(teacher => { teacherNames.push(teacher.name) })
         this.teachers = teacherNames
         this.teachers.push('Создать')
+        this.finishRequest(tsRID)
       }, error => {
         console.error(error)
       })
@@ -421,6 +481,7 @@ export default {
         disciplines.forEach(discipline => { disciplineNames.push(discipline.name) })
         this.disciplines = disciplineNames
         this.disciplines.push('Создать')
+        this.finishRequest(dsRID)
       })
       TimeService.get().then(times => {
         let timeNames = []
@@ -428,6 +489,7 @@ export default {
         times.forEach(time => { timeNames.push(time.name) })
         this.lessonTimes = timeNames
         this.lessonTimes.push('Создать')
+        this.finishRequest(tisRID)
       })
       TypeService.get().then(types => {
         let typeNames = []
@@ -435,52 +497,34 @@ export default {
         types.forEach(type => { typeNames.push(type.name) })
         this.lessonTypes = typeNames
         this.lessonTypes.push('Создать')
+        this.finishRequest(tysRID)
       })
-    }
-  },
-  computed: {
-    previewLesson () {
-      let teacherNames = []
-      this.newLesson.teacherList.forEach(teacher => {
-        teacherNames.push(teacher.name)
-      })
-      return {
-        start: this.newLesson.time.begin,
-        end: this.newLesson.time.end,
-        discipline: this.newLesson.discipline.name,
-        type: this.newLesson.type.name,
-        teachers: teacherNames,
-        auditorium: this.newLesson.auditory,
-        comment: this.newLesson.comment
-      }
-    }
-  },
-  methods: {
-    createLesson () {
-      this.newLesson.weekType = this.convertWeekType(this.weekType)
-      this.newLesson.weekdays = this.dayOfTheWeekChoice
+    },
+    modifyLesson () {
+      this.editLesson.weekType = this.convertWeekType(this.weekType)
+      this.editLesson.weekdays = this.dayOfTheWeekChoice
       // Скопировать ид расписания
       let schId = this.$store.state.schedule.sch.id
-      this.newLesson.schId = schId
-      this.newLesson.type.schId = schId
-      this.newLesson.discipline.schId = schId
-      this.newLesson.time.schId = schId
+      this.editLesson.schId = schId
+      this.editLesson.type.schId = schId
+      this.editLesson.discipline.schId = schId
+      this.editLesson.time.schId = schId
       if (this.addTeachersField) {
-        this.newLesson.teacherList.forEach(teacher => {
+        this.editLesson.teacherList.forEach(teacher => {
           if (teacher.name === this.newTeacher) {
             teacher.schId = schId
           }
         })
       }
       if (this.weekType !== 'Определённые даты') {
-        this.newLesson.startDate = this.newLesson.dates[0]
-        this.newLesson.endDate = this.newLesson.dates[1]
-        this.newLesson.dates.splice(0, this.newLesson.dates.length)
+        this.editLesson.startDate = this.editLesson.dates[0]
+        this.editLesson.endDate = this.editLesson.dates[1]
+        this.editLesson.dates.splice(0, this.editLesson.dates.length)
       }
-      console.log('Created lesson: ')
-      console.log(this.newLesson)
-      LessonService.create(this.newLesson).then(() => {
-        this.$router.push('/schedule/' + schId)
+      console.log('Modified lesson: ')
+      console.log(this.editLesson)
+      LessonService.modify(this.id, this.editLesson).then(() => {
+        this.$router.push('/lesson/' + this.id)
       })
     },
     convertWeekType (weekType) {
@@ -495,14 +539,61 @@ export default {
           return 3 // WeekType.Dates
       }
     },
+    translateWeekType (weekType) {
+      switch (weekType) {
+        case 'Any':
+          return 'Каждую'
+        case 'Odd':
+          return 'Нечётные'
+        case 'Even':
+          return 'Чётные'
+        case 'Dates':
+          return 'Определённые даты'
+        default:
+          return 'Неизвестно'
+      }
+    },
+    getDates (weekType) {
+      switch (weekType) {
+        case 'Каждую':
+        case 'Чётные':
+        case 'Нечётные':
+          let dates = Array(2)
+          dates[0] = this.editLesson.startDate
+          dates[1] = this.editLesson.endDate
+          return dates
+        default:
+          return this.editLesson.dates
+      }
+    },
+    getWeekdayNum (weekDay) {
+      switch (weekDay) {
+        case 'MONDAY':
+          return 0
+        case 'TUESDAY':
+          return 1
+        case 'WEDNESDAY':
+          return 2
+        case 'THURSDAY':
+          return 3
+        case 'FRIDAY':
+          return 4
+        case 'SATURDAY':
+          return 5
+        case 'SUNDAY':
+          return 6
+        default:
+          return 0
+      }
+    },
     onSemesterDatesChange () {
       if (this.useSemesterDates) {
-        this.newLesson.dates.splice(0, this.newLesson.dates.length)
-        this.newLesson.dates.push(this.currentSchedule.start)
-        this.newLesson.dates.push(this.currentSchedule.stop)
+        this.editLesson.dates.splice(0, this.editLesson.dates.length)
+        this.editLesson.dates.push(this.currentSchedule.start)
+        this.editLesson.dates.push(this.currentSchedule.stop)
         this.readOnlyCalendar = true
       } else {
-        this.newLesson.dates.splice(0, this.newLesson.dates.length)
+        this.editLesson.dates.splice(0, this.editLesson.dates.length)
         this.readOnlyCalendar = false
       }
     },
@@ -525,160 +616,21 @@ export default {
         info: ''
       }
     },
-    onWeekTypeChanged () {
-      this.resetAllInputs()
+    awaitRequest () {
+      let reqId = this.requestsFinished.length
+      this.requestsFinished.push(false)
+      return reqId
     },
-    resetAllInputs () {
-      this.resetType()
-      this.resetCustomTimes()
-      this.resetTimeChoice()
-      this.resetChosenDates()
-      this.resetCustomSubject()
-      this.resetTeachers()
-      this.resetAuditory()
-      this.resetComment()
-    },
-    resetType () {
-      this.customType = ''
-      this.newLesson.type.id = null
-      this.newLesson.type.name = ''
-    },
-    resetCustomTimes () {
-      this.customTimes = ''
-      this.newLesson.time.id = null
-      this.newLesson.time.begin = ''
-      this.newLesson.time.end = ''
-    },
-    resetTimeChoice () {
-      this.startTime = null
-      this.endTime = null
-      this.newLesson.time.id = null
-      this.newLesson.time.begin = ''
-      this.newLesson.time.end = ''
-    },
-    resetChosenDates () {
-      this.newLesson.dates.splice(0, this.newLesson.dates.length)
-      this.newLesson.day = ''
-      this.useSemesterDates = false
-    },
-    resetCustomSubject () {
-      this.customSubject = ''
-      this.newLesson.discipline.id = null
-      this.newLesson.discipline.name = ''
-    },
-    resetTeachers () {
-      this.addTeachersField = false
-      this.selectedTeachers.splice(0, this.selectedTeachers.length)
-      this.displayTeachers.splice(0, this.displayTeachers.length)
-      this.newTeacher = ''
-      this.newLesson.teacherList = []
-    },
-    resetAuditory () {
-      this.newLesson.auditory = ''
-    },
-    resetComment () {
-      this.newLesson.comment = ''
-    },
-    onLessonTypeChanged () {
-      if (this.customType !== 'Создать') {
-        this.fetchedBackEndData.types.forEach(type => {
-          if (type.name === this.customType) {
-            this.newLesson.type.id = type.id
-          }
-        })
-        this.newLesson.type.name = this.customType
-      } else {
-        this.newLesson.type.id = null
-        this.newLesson.type.name = ''
-      }
-      this.resetCustomTimes()
-      this.resetTeachers()
-      this.resetCustomSubject()
-      this.resetAuditory()
-      this.resetComment()
-    },
-    onLessonTimesChanged () {
-      if (this.customTimes !== 'Создать') {
-        let begin = ''
-        let end = ''
-        let timeId = null
-        let name = ''
-        this.fetchedBackEndData.times.forEach(time => {
-          if (this.customTimes === time.name) {
-            begin = time.begin
-            end = time.end
-            timeId = time.id
-            name = time.name
-          }
-        })
-        this.newLesson.time.name = name
-        this.newLesson.time.id = timeId
-        this.newLesson.time.begin = begin
-        this.newLesson.time.end = end
-      } else {
-        this.resetTimeChoice()
-      }
-      this.resetTeachers()
-      this.resetCustomSubject()
-      this.resetAuditory()
-      this.resetComment()
-    },
-    onLessonStartTimeChanged () {
-      this.newLesson.time.begin = this.startTime
-    },
-    onLessonEndTimeChanged () {
-      this.newLesson.time.end = this.endTime
-    },
-    onLessonTeachersChanged () {
-      this.displayTeachers.splice(0, this.displayTeachers.length)
-      this.selectedTeachers.forEach(teacher => {
-        if (teacher !== 'Создать') {
-          this.displayTeachers.push(this.convertTeacherNameToObject(teacher))
+    finishRequest (reqId) {
+      this.requestsFinished[reqId] = true
+      for (let i in this.requestsFinished) {
+        if (!this.requestsFinished[i]) {
+          this.requestsDone = false
+          return
         }
-      })
-      if (this.selectedTeachers.find((teacherName) => { return teacherName === 'Создать' })) {
-        this.addTeachersField = true
-        this.displayTeachers.push(this.convertTeacherNameToObject(this.newTeacher))
-        console.log('Add teachers triggered')
-      } else {
-        this.addTeachersField = false
-        console.log('Add teachers field disabled')
       }
-      this.newLesson.teacherList = this.displayTeachers
-      this.newLesson.discipline.name = ''
-      this.resetCustomSubject()
-      this.resetAuditory()
-      this.resetComment()
-    },
-    onNewTeacherChanged () {
-      this.displayTeachers.splice(0, this.displayTeachers.length)
-      this.selectedTeachers.forEach(teacher => {
-        if (teacher !== 'Создать') {
-          this.displayTeachers.push(this.convertTeacherNameToObject(teacher))
-        }
-      })
-      this.displayTeachers.push(this.convertTeacherNameToObject(this.newTeacher))
-      this.newLesson.teacherList = this.displayTeachers
-    },
-    onLessonSubjectChanged () {
-      if (this.customSubject !== 'Создать') {
-        this.fetchedBackEndData.disciplines.forEach(discipline => {
-          if (discipline.name === this.customSubject) {
-            this.newLesson.discipline.id = discipline.id
-          }
-        })
-        this.newLesson.discipline.name = this.customSubject
-      } else {
-        this.newLesson.discipline.id = null
-        this.newLesson.discipline.name = ''
-      }
-      this.resetAuditory()
-      this.resetComment()
-    },
-    onValidateAutoscroll (elem) {
-      console.log('Received autoscroll request with options:')
-      console.log(elem.options)
-      this.$vuetify.goTo(elem.$el, elem.options)
+      this.requestsDone = true
+      console.log(this.requestsFinished)
     }
   }
 }

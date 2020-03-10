@@ -82,8 +82,10 @@ export default {
   },
   methods: {
     goToSubjectInfo () {
-      console.log('Went to subject')
-      this.$router.push('/lesson/' + this.lesson.lesson)
+      if (this.hasActions) {
+        console.log('Went to subject')
+        this.$router.push('/lesson/' + this.lesson.lesson)
+      }
     },
     lessonTimeSlice (timeString) {
       if (timeString.split(':').length > 2) {
