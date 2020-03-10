@@ -507,8 +507,7 @@ export default {
     },
     convertTeacherNameToObject (teacherName) {
       // Конвертирование из имени препода в его объект
-      for (let i in this.fetchedBackEndData.teachers) {
-        let teacher = this.fetchedBackEndData.teachers[i]
+      for (let teacher of this.fetchedBackEndData.teachers) {
         if (teacher.name === teacherName) {
           return {
             id: teacher.id,
