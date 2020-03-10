@@ -22,6 +22,9 @@ public class TimeView {
     private List<Long> lessons;
 
     public static final Comparator<TimeView> COMPARE_BY_START = (timeView, t1) -> {
-        return timeView.getBegin().isBefore(t1.getBegin())?1:-1;
+        if(timeView.getBegin().equals(t1.getBegin())){
+            return 0;
+        }
+        return timeView.getBegin().isAfter(t1.getBegin())?1:-1;
     };
 }

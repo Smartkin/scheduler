@@ -3,6 +3,7 @@ package com.dvoeizlarza.scheduler.controller.api;
 import com.dvoeizlarza.scheduler.dto.TimeDto;
 import com.dvoeizlarza.scheduler.entity.Time;
 import com.dvoeizlarza.scheduler.service.TimeService;
+import com.dvoeizlarza.scheduler.view.TimeView;
 import com.dvoeizlarza.scheduler.viewconverter.TimeViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -35,7 +36,7 @@ public class TimeController {
     @GetMapping("list")
     @ResponseBody
     public Object readList(@RequestParam Long schId){
-        return timeService.readList(schId).stream().map(timeViewConverter::convert).collect(Collectors.toList());
+        return timeService.readList(schId).stream().map(timeViewConverter::convert).sorted(TimeView.COMPARE_BY_START).collect(Collectors.toList());
     }
 
     @PostMapping("modify")
