@@ -37,7 +37,7 @@
               :condition="weekType && weekType !== 'Определённые даты'"
               name="период"
               vid="lessonPeriod"
-              rules="''"
+              :rules="{}"
               @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
@@ -53,7 +53,7 @@
               :condition="weekType && weekType !== 'Определённые даты'"
               name="даты семестра"
               vid="useSemesterDates"
-              rules="''"
+              :rules="{}"
               @autoscroll="onValidateAutoscroll"
             >
               <v-checkbox
@@ -66,7 +66,7 @@
               :condition="weekType === 'Определённые даты'"
               name="даты"
               vid="lessonDates"
-              rules="''"
+              :rules="{}"
               @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
@@ -315,7 +315,7 @@
               <v-btn
                 block
                 :disabled="invalid"
-                @click="createLesson"
+                @click="passes(createLesson)"
               >
                 Создать
               </v-btn>
@@ -369,16 +369,19 @@ export default {
         weekType: '',
         dates: [],
         type: {
+          id: null,
           schId: null,
           name: ''
         },
         discipline: {
+          id: null,
           schId: null,
           name: ''
         },
         teacherList: [],
         auditory: '',
         time: {
+          id: null,
           schId: null,
           name: '',
           begin: '',
@@ -497,7 +500,6 @@ export default {
         this.newLesson.dates.push(this.currentSchedule.start)
         this.newLesson.dates.push(this.currentSchedule.stop)
         this.readOnlyCalendar = true
-        console.log(this.$refs)
       } else {
         this.newLesson.dates.splice(0, this.newLesson.dates.length)
         this.readOnlyCalendar = false
@@ -538,16 +540,19 @@ export default {
     },
     resetType () {
       this.customType = ''
+      this.newLesson.type.id = null
       this.newLesson.type.name = ''
     },
     resetCustomTimes () {
       this.customTimes = ''
+      this.newLesson.time.id = null
       this.newLesson.time.begin = ''
       this.newLesson.time.end = ''
     },
     resetTimeChoice () {
       this.startTime = null
       this.endTime = null
+      this.newLesson.time.id = null
       this.newLesson.time.begin = ''
       this.newLesson.time.end = ''
     },
@@ -558,6 +563,7 @@ export default {
     },
     resetCustomSubject () {
       this.customSubject = ''
+      this.newLesson.discipline.id = null
       this.newLesson.discipline.name = ''
     },
     resetTeachers () {
@@ -582,6 +588,7 @@ export default {
         })
         this.newLesson.type.name = this.customType
       } else {
+        this.newLesson.type.id = null
         this.newLesson.type.name = ''
       }
       this.resetCustomTimes()
@@ -662,6 +669,7 @@ export default {
         })
         this.newLesson.discipline.name = this.customSubject
       } else {
+        this.newLesson.discipline.id = null
         this.newLesson.discipline.name = ''
       }
       this.resetAuditory()
