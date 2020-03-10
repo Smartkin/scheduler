@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class LessonDateView {
     private Long id;
+    private Long lesson;
     private LocalDate date;
     private LocalTime start;
     private LocalTime end;
@@ -27,25 +28,22 @@ public class LessonDateView {
     private List<NoteType> modifiedField;
     private String comment;
 
-    public static final Comparator<LessonDateView> COMPARE_BY_START = new Comparator<LessonDateView>() {
-        @Override
-        public int compare(LessonDateView lessonDateView, LessonDateView t1) {
-            if(lessonDateView.getDate().equals(t1.getDate()))
-            {
-                if(lessonDateView.getStart().equals(t1.getStart())){
-                    if(lessonDateView.getEnd().equals(t1.getEnd())){
-                        return 0;
-                    }
-                    else {
-                        return lessonDateView.getEnd().isAfter(t1.getEnd()) ? 1 : -1;
-                    }
-                }else {
-                    return lessonDateView.getStart().isAfter(t1.getStart()) ? 1 : -1;
+    public static final Comparator<LessonDateView> COMPARE_BY_START = (lessonDateView, t1) -> {
+        if(lessonDateView.getDate().equals(t1.getDate()))
+        {
+            if(lessonDateView.getStart().equals(t1.getStart())){
+                if(lessonDateView.getEnd().equals(t1.getEnd())){
+                    return 0;
                 }
+                else {
+                    return lessonDateView.getEnd().isAfter(t1.getEnd()) ? 1 : -1;
+                }
+            }else {
+                return lessonDateView.getStart().isAfter(t1.getStart()) ? 1 : -1;
             }
-            else {
-                return lessonDateView.getDate().isAfter(t1.getDate())?1:-1;
-            }
+        }
+        else {
+            return lessonDateView.getDate().isAfter(t1.getDate())?1:-1;
         }
     };
 }

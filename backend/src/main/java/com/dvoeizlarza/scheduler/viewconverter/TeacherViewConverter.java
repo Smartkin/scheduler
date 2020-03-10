@@ -17,7 +17,9 @@ public class TeacherViewConverter implements Converter<Teacher, TeacherView> {
         view.setInfo(teacher.getInfo());
         view.setName(teacher.getName());
         view.setSchedule(teacher.getSchedule().getId());
-        view.setTeachers(teacher.getTeachers().stream().map(Teachers::getId).collect(Collectors.toList()));
+        if(teacher.getTeachers()!=null) {
+            view.setTeachers(teacher.getTeachers().stream().map(Teachers::getId).collect(Collectors.toList()));
+        }
         return view;
     }
 }

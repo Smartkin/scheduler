@@ -22,6 +22,7 @@ public class LessonDateViewConverter implements Converter<LessonDate, LessonDate
         Time time = lessonDate.getLesson().getTime();
         LessonDateView view = new LessonDateView();
         view.setId(lessonDate.getId());
+        view.setLesson(lessonDate.getLesson().getId());
         view.setDate(lessonDate.getDate());
         view.setDiscipline(tdt.getDiscipline().getName());
         view.setStart(time.getBegin());

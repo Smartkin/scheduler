@@ -37,7 +37,7 @@ public class LessonDate {
     private LessonDateStatus lessonDateStatus;
 
     // Зависимости
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "lessonDate")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "lessonDate", cascade = CascadeType.ALL)
     private List<Note> notes;
 
     public static final Comparator<LessonDate> COMPARE_BY_DATE = (lessonDate, t1) -> {
