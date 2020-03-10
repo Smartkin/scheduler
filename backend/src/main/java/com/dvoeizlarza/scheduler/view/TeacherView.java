@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.Comparator;
 import java.util.List;
 
 @Setter
@@ -23,4 +24,6 @@ public class TeacherView {
     private String name;
     private String info;
     private List<Long> teachers;
+
+    public static final Comparator<TeacherView> COMPARE_BY_NAME = Comparator.comparing(TeacherView::getName);
 }
