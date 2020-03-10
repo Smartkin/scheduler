@@ -37,7 +37,38 @@ public class LessonService {
     private Type type;
 
     public Lesson create(LessonDto dto) {
-        return modify(null, dto);
+        postValidate(dto);
+        TDT tdt = new TDT();
+        tdt.setDiscipline(discipline);
+        tdt.setType(type);
+        tdtRepository.save(tdt);
+
+        for (Teacher t : teacherList) {
+            Teachers teachers = new Teachers();
+            teachers.setTdt(tdt);
+            teachers.setTeacher(t);
+            teachersRepository.save(teachers);
+        }
+
+        Lesson lesson = new Lesson();
+        lesson.setTdt(tdt);
+        lesson.setTime(time);
+        lesson.setAuditorium(dto.getAuditory());
+        lessonRepository.save(lesson);
+
+        if (!dto.getWeekType().equals(WeekType.Dates)) {
+            dto.setDates(getDates(dto));
+        }
+
+        for (LocalDate d : dto.getDates()) {
+            LessonDate lessonDate = new LessonDate();
+            lessonDate.setSchedule(schedule);
+            lessonDate.setDate(d);
+            lessonDate.setLesson(lesson);
+            lessonDate.setLessonDateStatus(LessonDateStatus.Planned);
+            lessonDateRepository.save(lessonDate);
+        }
+        return lesson;
     }
 
     public LessonView read(Long id) {
@@ -60,7 +91,11 @@ public class LessonService {
 
     public Lesson modify(Long id, LessonDto dto) {
         postValidate(dto);
-        TDT tdt = new TDT();
+        Lesson lesson = lessonRepository.findById(id).orElse(null);
+        if(lesson==null){
+            return null;
+        }
+        TDT tdt = lesson.getTdt();
         tdt.setDiscipline(discipline);
         tdt.setType(type);
         tdtRepository.save(tdt);
@@ -72,8 +107,6 @@ public class LessonService {
             teachersRepository.save(teachers);
         }
 
-        Lesson lesson = new Lesson();
-        lesson.setId(id);
         lesson.setTdt(tdt);
         lesson.setTime(time);
         lesson.setAuditorium(dto.getAuditory());

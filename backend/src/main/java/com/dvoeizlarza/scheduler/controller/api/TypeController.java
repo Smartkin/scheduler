@@ -3,6 +3,7 @@ package com.dvoeizlarza.scheduler.controller.api;
 import com.dvoeizlarza.scheduler.dto.TypeDto;
 import com.dvoeizlarza.scheduler.entity.Type;
 import com.dvoeizlarza.scheduler.service.TypeService;
+import com.dvoeizlarza.scheduler.view.TypeView;
 import com.dvoeizlarza.scheduler.viewconverter.TypeViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("api/type")
@@ -36,7 +38,7 @@ public class TypeController {
     @ResponseBody
     Object readList(@RequestParam Long schId){
         List<Type> types = typeService.readList(schId);
-        return types.stream().map(typeViewConverter::convert);
+        return types.stream().map(typeViewConverter::convert).sorted(TypeView.COMPARE_BY_NAME).collect(Collectors.toList());
     }
 
     @PostMapping("modify")

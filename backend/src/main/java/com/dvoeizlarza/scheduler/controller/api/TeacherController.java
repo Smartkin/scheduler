@@ -3,6 +3,7 @@ package com.dvoeizlarza.scheduler.controller.api;
 import com.dvoeizlarza.scheduler.dto.TeacherDto;
 import com.dvoeizlarza.scheduler.entity.Teacher;
 import com.dvoeizlarza.scheduler.service.TeacherService;
+import com.dvoeizlarza.scheduler.view.TeacherView;
 import com.dvoeizlarza.scheduler.viewconverter.TeacherViewConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class TeacherController {
     @GetMapping("list")
     @ResponseBody
     Object readList(@RequestParam Long schId){
-        return teacherService.readList(schId).stream().map(teacherViewConverter::convert).collect(Collectors.toList());
+        return teacherService.readList(schId).stream().map(teacherViewConverter::convert).sorted(TeacherView.COMPARE_BY_NAME).collect(Collectors.toList());
     }
 
     @PostMapping("modify")
