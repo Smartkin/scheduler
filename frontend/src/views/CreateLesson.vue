@@ -32,26 +32,46 @@
                 @input="onWeekTypeChanged"
               />
             </validation-provider>
+<!--       Выбор дат проведения занятий     -->
             <validated-expand-field
               :condition="weekType && weekType !== 'Определённые даты'"
               name="период"
               vid="lessonPeriod"
+              rules="''"
               @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
                 v-model="newLesson.dates"
                 range
                 full-width
+                reactive
+                first-day-of-week="1"
+                :readonly="readOnlyCalendar"
+              />
+            </validated-expand-field>
+            <validated-expand-field
+              :condition="weekType && weekType !== 'Определённые даты'"
+              name="даты семестра"
+              vid="useSemesterDates"
+              rules="''"
+              @autoscroll="onValidateAutoscroll"
+            >
+              <v-checkbox
+                v-model="useSemesterDates"
+                @change="onSemesterDatesChange"
+                label="Использовать даты семестра"
               />
             </validated-expand-field>
             <validated-expand-field
               :condition="weekType === 'Определённые даты'"
               name="даты"
               vid="lessonDates"
+              rules="''"
               @autoscroll="onValidateAutoscroll"
             >
               <v-date-picker
                 v-model="newLesson.dates"
+                first-day-of-week="1"
                 multiple
                 full-width
               />
@@ -253,6 +273,7 @@
                 :error-messages="errors"
               />
             </validated-expand-field>
+<!--        Аудитория    -->
             <validated-expand-field
               :condition="newLesson.discipline.name !== ''"
               rules="required|min:1|max:255"
@@ -294,7 +315,7 @@
               <v-btn
                 block
                 :disabled="invalid"
-                @click="passes(createLesson)"
+                @click="createLesson"
               >
                 Создать
               </v-btn>
@@ -335,11 +356,14 @@ export default {
       startTime: null,
       endTime: null,
       addTeachersField: false,
+      readOnlyCalendar: false,
       selectedTeachers: [],
       displayTeachers: [],
       newTeacher: '',
       dayOfTheWeekChoice: '',
       fetchedBackEndData: {},
+      useSemesterDates: false,
+      currentSchedule: this.$store.state.schedule.sch,
       newLesson: {
         schId: null,
         weekType: '',
@@ -451,7 +475,9 @@ export default {
       }
       console.log('Created lesson: ')
       console.log(this.newLesson)
-      LessonService.create(this.newLesson)
+      LessonService.create(this.newLesson).then(() => {
+        this.$router.push('/schedule/' + schId)
+      })
     },
     convertWeekType (weekType) {
       switch (weekType) {
@@ -463,6 +489,18 @@ export default {
           return 1 // WeekType.Odd
         default:
           return 3 // WeekType.Dates
+      }
+    },
+    onSemesterDatesChange () {
+      if (this.useSemesterDates) {
+        this.newLesson.dates.splice(0, this.newLesson.dates.length)
+        this.newLesson.dates.push(this.currentSchedule.start)
+        this.newLesson.dates.push(this.currentSchedule.stop)
+        this.readOnlyCalendar = true
+        console.log(this.$refs)
+      } else {
+        this.newLesson.dates.splice(0, this.newLesson.dates.length)
+        this.readOnlyCalendar = false
       }
     },
     convertTeacherNameToObject (teacherName) {
@@ -516,6 +554,7 @@ export default {
     resetChosenDates () {
       this.newLesson.dates.splice(0, this.newLesson.dates.length)
       this.newLesson.day = ''
+      this.useSemesterDates = false
     },
     resetCustomSubject () {
       this.customSubject = ''

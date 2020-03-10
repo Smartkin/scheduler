@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -17,6 +18,8 @@ public class ScheduleView {
     private String faculty;
     private String groupName;
     private String semester;
+    private LocalDate start;
+    private LocalDate stop;
     private List<Long> teachers;
     private List<Long> disciplines;
     private List<Long> types;
