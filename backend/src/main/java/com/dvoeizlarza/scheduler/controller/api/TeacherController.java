@@ -44,6 +44,7 @@ public class TeacherController {
     ResponseEntity<String> modify(@RequestParam Long id, @RequestBody TeacherDto dto){
         teacherViewConverter.convert(teacherService.modify(id, dto));
         return ResponseEntity.ok("Success");
+//        return ResponseEntity.badRequest().build();
     }
 
     @Autowired
