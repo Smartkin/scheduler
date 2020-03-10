@@ -41,10 +41,13 @@ public class Init {
 
     @PostConstruct
     void init() {
+        if(!scheduleService.readList().isEmpty()){
+            return;
+        }
         ScheduleDto scheduleDto = new ScheduleDto(null, "МТУСИ", "ИТ", "БСТ1602", "8", LocalDate.of(2020,2,4), LocalDate.of(2020,4,30));
         Schedule schedule = scheduleService.create(scheduleDto);
         DisciplineDto disciplineDto = new DisciplineDto(null, 1L, "Text", null, CertificationType.Nope);
-        Discipline discipline = disciplineService.create(disciplineDto);
+//        Discipline discipline = disciplineService.create(disciplineDto);
         TeacherDto teacherDto = new TeacherDto(null, 1L, "Крот", "Препод");
         List<TeacherDto> teacherDtos = new LinkedList<>();
         teacherDtos.add(teacherDto);
