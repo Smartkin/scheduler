@@ -80,10 +80,9 @@ public class LessonService {
         dateCompile(lesson, view);
         TDT tdt = lesson.getTdt();
         view.setSchId(tdt.getDiscipline().getSchedule().getId());
-        view.setAuditory(lesson.getAuditorium());
         view.setDiscipline(tdt.getDiscipline().getId());
         view.setAuditory(lesson.getAuditorium());
-        view.setTeacherList(tdt.getTeachers().stream().map(Teachers::getId).collect(Collectors.toList()));
+        view.setTeacherList(tdt.getTeachers().stream().map(x -> x.getTeacher().getId()).collect(Collectors.toList()));
         view.setTime(lesson.getTime().getId());
         view.setType(tdt.getType().getId());
         return view;
