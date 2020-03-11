@@ -17,6 +17,8 @@ public class ScheduleViewConverter implements Converter<Schedule, ScheduleView> 
         view.setFaculty(source.getFaculty());
         view.setGroupName(source.getGroupName());
         view.setSemester(source.getSemester());
+        view.setStart(source.getStart());
+        view.setStop(source.getStop());
         view.setDisciplines(source.getDisciplines().stream().map(Discipline::getId).collect(Collectors.toList()));
         view.setTeachers(source.getTeachers().stream().map(Teacher::getId).collect(Collectors.toList()));
         view.setTypes(source.getTypes().stream().map(Type::getId).collect(Collectors.toList()));

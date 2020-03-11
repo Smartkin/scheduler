@@ -9,6 +9,8 @@ import CreateTeacher from '../views/CreateTeacher'
 import Teacher from '../views/Teacher'
 import ModifyTeacher from '../views/ModifyTeacher'
 import CreateSchedule from '../views/CreateSchedule'
+import LessonView from '../views/LessonView'
+import ModifyLesson from '../views/ModifyLesson'
 
 Vue.use(VueRouter)
 
@@ -60,6 +62,18 @@ const routes = [
     path: '/teacher/:id/modify',
     name: 'teacher_modify',
     component: ModifyTeacher,
+    props: true
+  },
+  {
+    path: '/lesson/:id',
+    name: 'lessonView',
+    component: LessonView,
+    props: true
+  },
+  {
+    path: '/lesson/:id/modify',
+    name: 'lesson_modify',
+    component: ModifyLesson,
     props: true
   }
 ]

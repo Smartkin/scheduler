@@ -91,7 +91,7 @@ export default {
   methods: {
     modifyTeacher () {
       TeacherService.modify(this.id, this.editTeacher).then(() => {
-        this.$router.push('/teachers')
+        this.$router.push('/teacher/' + this.id)
       }, error => {
         console.error(error)
         this.message = error.message

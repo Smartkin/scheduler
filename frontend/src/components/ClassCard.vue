@@ -25,8 +25,13 @@
             {{ lessonTimeEnd }}
           </div>
         </v-col>
-        <v-col v-ripple @click="goToSubjectInfo" cols="9">
-          {{ lesson.discipline }}
+        <v-col cols="9">
+          <v-list-item
+            class="black--text"
+            @click="goToSubjectInfo"
+          >
+            {{ lesson.discipline }}
+          </v-list-item>
         </v-col>
       </v-row>
       <v-row>
@@ -36,13 +41,16 @@
             v-for="(teacher, i) in lesson.teachers"
             :key="i"
             class="black--text"
-            @click="goToTeacherInfo(teacher)"
           >
             <v-list-item-title> {{ teacher }} </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-row>
     </v-container>
+    <v-card-actions v-if="hasActions">
+      <v-btn text>Подробно</v-btn>
+      <v-btn text>Изменить</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -51,6 +59,10 @@ export default {
   props: {
     lesson: {
       type: Object
+    },
+    hasActions: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
@@ -69,12 +81,11 @@ export default {
     console.log(this.lesson)
   },
   methods: {
-    goToTeacherInfo (teacher) {
-      console.log('Went to teacher page: ')
-      console.log(teacher)
-    },
     goToSubjectInfo () {
-      console.log('Went to subject')
+      if (this.hasActions) {
+        console.log('Went to subject')
+        this.$router.push('/lesson/' + this.lesson.lesson)
+      }
     },
     lessonTimeSlice (timeString) {
       if (timeString.split(':').length > 2) {

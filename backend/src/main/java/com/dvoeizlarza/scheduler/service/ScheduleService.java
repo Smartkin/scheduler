@@ -48,7 +48,8 @@ public class ScheduleService implements CRLUD<Schedule, ScheduleDto> {
         schedule.setFaculty(dto.getFaculty());
         schedule.setGroupName(dto.getGroupName());
         schedule.setSemester(dto.getSemester());
-        schedule.setStart(LocalDate.now());
+        schedule.setStart(dto.getStart());
+        schedule.setStop(dto.getStop());
         scheduleRepository.save(schedule);
         return schedule;
     }
