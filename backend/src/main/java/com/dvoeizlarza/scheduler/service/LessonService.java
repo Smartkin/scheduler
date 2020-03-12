@@ -152,7 +152,7 @@ public class LessonService {
     }
 
     private List<LocalDate> getDates(LessonDto dto) {
-        TemporalField woy = WeekFields.of(Locale.getDefault()).weekBasedYear();
+        TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
         int defWeek = scheduleService.read(dto.getSchId()).getStart().get(woy);
 
         List<LocalDate> dates = new LinkedList<>();
@@ -161,7 +161,8 @@ public class LessonService {
         int step = dto.getWeekType().equals(WeekType.Any) ? 7 : 14;
         while (date.isBefore(dto.getEndDate())) {
             if (flag) {
-                if (date.get(woy) - defWeek % 2 == 1 && dto.getWeekType().equals(WeekType.Odd) || date.get(woy) - defWeek % 2 == 0 && dto.getWeekType().equals(WeekType.Even)) {
+                int evenOdd = (date.get(woy) - defWeek)%2;
+                if (evenOdd == 1 && dto.getWeekType().equals(WeekType.Odd) || evenOdd == 0 && dto.getWeekType().equals(WeekType.Even)) {
                     date = date.plusDays(1L);
                     continue;
                 }
@@ -215,8 +216,8 @@ public class LessonService {
         if (dist == 7) {
             weekType = WeekType.Any;
         } else {
-            TemporalField woy = WeekFields.of(Locale.getDefault()).weekBasedYear();
-            int defWeek = scheduleService.read(view.getSchId()).getStart().get(woy);
+            TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+            int defWeek = lesson.getTime().getSchedule().getStart().get(woy);
             boolean parity = (startDate.get(woy) - defWeek) % 2 == 1;
             weekType = parity ? WeekType.Even : WeekType.Odd;
         }
