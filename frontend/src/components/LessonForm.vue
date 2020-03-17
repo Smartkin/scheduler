@@ -453,6 +453,14 @@
                 <slot>Отправить</slot>
               </v-btn>
             </conditional-expand-field>
+            <v-alert
+              :value="errorMessage !== ''"
+              type="error"
+              dismissible
+              @input="$emit('close-error')"
+            >
+              {{ errorMessage }}
+            </v-alert>
           </v-col>
         </v-row>
       </v-container>
@@ -517,6 +525,14 @@ export default {
     submitLesson: {
       type: Function,
       required: true
+    },
+    modifyMode: {
+      type: Boolean,
+      default: false
+    },
+    errorMessage: {
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -580,8 +596,23 @@ export default {
         this.lessonTypes.push('Создать')
       })
     }
+    if (this.modifyMode) {
+      this.updateEditLesson()
+    }
   },
   methods: {
+    updateEditLesson () {
+      console.log(this.formLesson)
+      this.weekType = this.formLesson.weekType
+      this.dayOfTheWeekChoice = this.formLesson.weekdays
+      this.customType = this.formLesson.type.name
+      this.customTimes = this.formLesson.time.name
+      let teachers = []
+      this.formLesson.teacherList.forEach(teacher => {
+        teachers.push(teacher.name)
+      })
+      this.selectedTeachers = teachers
+    },
     convertLessonToDtoAndSubmit () {
       this.formLesson.weekType = this.convertWeekType(this.weekType)
       this.formLesson.weekdays = this.dayOfTheWeekChoice

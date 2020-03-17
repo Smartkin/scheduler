@@ -28,7 +28,7 @@ public class LessonController {
 
     @PostMapping("modify")
     @ResponseBody
-    ResponseEntity<String> modify(Long id, LessonDto dto) {
+    ResponseEntity<String> modify(Long id, @RequestBody LessonDto dto) {
         lessonService.modify(id, dto);
         return ResponseEntity.ok("Success");
     }

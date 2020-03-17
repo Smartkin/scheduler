@@ -5,6 +5,9 @@
       v-if="requestsDone"
       :form-lesson="editLesson"
       :submit-lesson="modifyLesson"
+      :modify-mode="requestsDone"
+      :error-message="errorMessage"
+      @close-error="onCloseError"
     >
       Сохранить
     </lesson-form>
@@ -26,6 +29,7 @@ export default {
     return {
       requestsFinished: [],
       requestsDone: false,
+      errorMessage: '',
       editLesson: {
         schId: null,
         weekType: '',
@@ -124,6 +128,8 @@ export default {
       console.log(this.editLesson)
       LessonService.modify(this.id, this.editLesson).then(() => {
         this.$router.push('/lesson/' + this.id)
+      }, error => {
+        this.errorMessage = error.message
       })
     },
     translateWeekType (weekType) {
@@ -187,7 +193,10 @@ export default {
         }
       }
       this.requestsDone = true
-      console.log(this.requestsFinished)
+      console.log('Requests done')
+    },
+    onCloseError () {
+      this.errorMessage = ''
     }
   }
 }

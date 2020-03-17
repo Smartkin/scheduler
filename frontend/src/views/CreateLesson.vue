@@ -1,5 +1,10 @@
 <template>
-  <lesson-form :form-lesson="newLesson" :submit-lesson="createLesson">
+  <lesson-form
+    :form-lesson="newLesson"
+    :submit-lesson="createLesson"
+    :error-message="errorMessage"
+    @close-error="onCloseError"
+  >
     Создать
   </lesson-form>
 </template>
@@ -13,6 +18,7 @@ export default {
   data () {
     return {
       currentSchedule: this.$store.state.schedule.sch,
+      errorMessage: '',
       newLesson: {
         schId: null,
         weekType: '',
@@ -52,19 +58,12 @@ export default {
       console.log(this.newLesson)
       LessonService.create(this.newLesson).then(() => {
         this.$router.push('/schedule/' + this.currentSchedule.id)
+      }, error => {
+        this.errorMessage = error.message
       })
     },
-    convertWeekType (weekType) {
-      switch (weekType) {
-        case 'Каждую':
-          return 2 // WeekType.Any
-        case 'Чётные':
-          return 0 // WeekType.Even
-        case 'Нечётные':
-          return 1 // WeekType.Odd
-        default:
-          return 3 // WeekType.Dates
-      }
+    onCloseError () {
+      this.errorMessage = ''
     }
   }
 }
