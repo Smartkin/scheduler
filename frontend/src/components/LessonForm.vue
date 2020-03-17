@@ -261,7 +261,7 @@
                       <validation-provider
                         name="timeEndMinutes"
                         vid="textEndTimeMinutes"
-                        :rules="(!useClocksToEnterTime && customTimes === 'Создать') ? hoursRules: {}"
+                        :rules="(!useClocksToEnterTime && customTimes === 'Создать') ? minutesRules: {}"
                         v-slot="{ errors, valid }"
                       >
                         <v-text-field
@@ -284,58 +284,58 @@
               vid="lessonCustomTimes"
               @autoscroll="onValidateAutoscroll"
             >
-            <v-row>
-              <v-col md="6" cols="12">
-                <v-label>Начало</v-label>
-                <conditional-validation
-                  :condition="useClocksToEnterTime"
-                  name="время начала"
-                  v-slot="{ errors }"
-                >
-                  <v-time-picker
-                    full-width
-                    scrollable
-                    format="24hr"
-                    v-model="startTime"
-                    :max="endTime"
-                    @input="onLessonStartTimeChanged"
-                  />
-                  <v-alert
-                    dismissible
-                    dense
-                    type="error"
-                    v-if="errors[0]"
+              <v-row>
+                <v-col md="6" cols="12">
+                  <v-label>Начало</v-label>
+                  <conditional-validation
+                    :condition="useClocksToEnterTime"
+                    name="время начала"
+                    v-slot="{ errors }"
                   >
-                    {{ errors[0] }}
-                  </v-alert>
-                </conditional-validation>
-              </v-col>
-              <v-col>
-                <v-label>Конец</v-label>
-                <conditional-validation
-                  :condition="useClocksToEnterTime"
-                  name="время конца"
-                  v-slot="{ errors }"
-                >
-                  <v-time-picker
-                    full-width
-                    scrollable
-                    format="24hr"
-                    v-model="endTime"
-                    :min="startTime"
-                    @input="onLessonEndTimeChanged"
-                  />
-                  <v-alert
-                    dismissible
-                    dense
-                    type="error"
-                    v-if="errors[0]"
+                    <v-time-picker
+                      full-width
+                      scrollable
+                      format="24hr"
+                      v-model="startTime"
+                      :max="endTime"
+                      @input="onLessonStartTimeChanged"
+                    />
+                    <v-alert
+                      dismissible
+                      dense
+                      type="error"
+                      v-if="errors[0]"
+                    >
+                      {{ errors[0] }}
+                    </v-alert>
+                  </conditional-validation>
+                </v-col>
+                <v-col>
+                  <v-label>Конец</v-label>
+                  <conditional-validation
+                    :condition="useClocksToEnterTime"
+                    name="время конца"
+                    v-slot="{ errors }"
                   >
-                    {{ errors[0] }}
-                  </v-alert>
-                </conditional-validation>
-              </v-col>
-            </v-row>
+                    <v-time-picker
+                      full-width
+                      scrollable
+                      format="24hr"
+                      v-model="endTime"
+                      :min="startTime"
+                      @input="onLessonEndTimeChanged"
+                    />
+                    <v-alert
+                      dismissible
+                      dense
+                      type="error"
+                      v-if="errors[0]"
+                    >
+                      {{ errors[0] }}
+                    </v-alert>
+                  </conditional-validation>
+                </v-col>
+              </v-row>
             </conditional-expand-field>
             <!--        Список преводавателей    -->
             <validated-expand-field

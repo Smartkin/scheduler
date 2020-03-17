@@ -35,3 +35,5 @@ extend('arrayMinSize', {
     return value.length >= min
   }
 })
+
+console.log(rules)

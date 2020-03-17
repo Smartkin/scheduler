@@ -66,6 +66,10 @@ export default {
         {
           name: 'Тип пары',
           link: '/create_type'
+        },
+        {
+          name: 'Время пары',
+          link: '/create_time'
         }
       ],
       listingLinks: [
