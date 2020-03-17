@@ -201,11 +201,10 @@
                   <v-row no-gutters>
                     с
                     <v-col class="mx-1" cols="1">
-                      <conditional-validation
-                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                      <validation-provider
                         name="timeStartHours"
                         vid="textStartTimeHours"
-                        rules="required|max_value:23|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
+                        :rules="(!useClocksToEnterTime && customTimes === 'Создать') ? hoursRules : {}"
                         v-slot="{ errors, valid }"
                       >
                         <v-text-field
@@ -217,15 +216,14 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </conditional-validation>
+                      </validation-provider>
                     </v-col>
                     :
                     <v-col class="mx-1" cols="1">
-                      <conditional-validation
-                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                      <validation-provider
                         name="timeStartMinutes"
                         vid="textStartTimeMinutes"
-                        rules="required|max_value:59|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
+                        :rules="(!useClocksToEnterTime && customTimes === 'Создать') ? minutesRules : {}"
                         v-slot="{ errors, valid }"
                       >
                         <v-text-field
@@ -237,15 +235,14 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </conditional-validation>
+                      </validation-provider>
                     </v-col>
                     <span>до</span>
                     <v-col class="mx-1"  cols="1">
-                      <conditional-validation
-                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                      <validation-provider
                         name="timeEndHours"
                         vid="textEndTimeHours"
-                        rules="required|max_value:23|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
+                        :rules="(!useClocksToEnterTime && customTimes === 'Создать') ? hoursRules: {}"
                         v-slot="{ errors, valid }"
                       >
                         <v-text-field
@@ -257,15 +254,14 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </conditional-validation>
+                      </validation-provider>
                     </v-col>
                     :
                     <v-col class="mx-1"  cols="1">
-                      <conditional-validation
-                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                      <validation-provider
                         name="timeEndMinutes"
                         vid="textEndTimeMinutes"
-                        rules="required|max_value:59|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
+                        :rules="(!useClocksToEnterTime && customTimes === 'Создать') ? hoursRules: {}"
                         v-slot="{ errors, valid }"
                       >
                         <v-text-field
@@ -277,7 +273,7 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </conditional-validation>
+                      </validation-provider>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -514,6 +510,8 @@ export default {
       fetchedBackEndData: {},
       useSemesterDates: false,
       useClocksToEnterTime: false,
+      minutesRules: 'required|max_value:59|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes',
+      hoursRules: 'required|max_value:23|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes',
       test: false // Флаг на осуществление тестирования с тестовыми данными
     }
   },
