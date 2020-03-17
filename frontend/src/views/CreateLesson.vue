@@ -7,7 +7,7 @@
       <v-container fluid>
         <v-row>
           <v-col md="6" cols="12">
-            <v-card>
+            <v-card style="position: sticky; top: 64px">
               <v-card-title>
                 Предпросмотр
               </v-card-title>
