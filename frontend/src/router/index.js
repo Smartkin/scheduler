@@ -11,6 +11,7 @@ import ModifyTeacher from '../views/ModifyTeacher'
 import CreateSchedule from '../views/CreateSchedule'
 import LessonView from '../views/LessonView'
 import ModifyLesson from '../views/ModifyLesson'
+import LessonDateView from '../views/LessonDateView'
 
 Vue.use(VueRouter)
 
@@ -74,6 +75,12 @@ const routes = [
     path: '/lesson/:id/modify',
     name: 'lesson_modify',
     component: ModifyLesson,
+    props: true
+  },
+  {
+    path: '/lesson_date/:id',
+    name: 'lesson_date',
+    component: LessonDateView,
     props: true
   }
 ]

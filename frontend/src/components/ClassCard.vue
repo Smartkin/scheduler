@@ -28,7 +28,7 @@
         <v-col cols="9">
           <v-list-item
             class="black--text"
-            @click="goToSubjectInfo"
+            @click="goToLessonInfo"
           >
             {{ lesson.discipline }}
           </v-list-item>
@@ -48,8 +48,8 @@
       </v-row>
     </v-container>
     <v-card-actions v-if="hasActions">
-      <v-btn text>Подробно</v-btn>
-      <v-btn text>Изменить</v-btn>
+      <v-btn :to="'/lesson_date/' + lesson.id" text>Подробно</v-btn>
+      <v-btn :to="'/lesson_date/' + lesson.id + '/modify'" text>Изменить</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -66,10 +66,6 @@ export default {
     }
   },
   computed: {
-    currentLesson () {
-      console.log(this.lesson)
-      return this.lesson
-    },
     lessonTimeBegin () {
       return this.lessonTimeSlice(this.lesson.start)
     },
@@ -81,7 +77,7 @@ export default {
     console.log(this.lesson)
   },
   methods: {
-    goToSubjectInfo () {
+    goToLessonInfo () {
       if (this.hasActions) {
         console.log('Went to subject')
         this.$router.push('/lesson/' + this.lesson.lesson)

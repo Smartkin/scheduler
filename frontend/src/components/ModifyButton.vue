@@ -1,7 +1,7 @@
 <template>
   <v-row dense>
     <v-col>
-      <v-btn append to="modify">
+      <v-btn append :text="text" to="modify">
         Редактировать
       </v-btn>
     </v-col>
@@ -10,6 +10,12 @@
 
 <script>
 export default {
-  name: 'modify-button'
+  name: 'modify-button',
+  props: {
+    text: {
+      type: Boolean,
+      default: false
+    }
+  }
 }
 </script>

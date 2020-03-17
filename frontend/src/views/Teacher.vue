@@ -2,14 +2,13 @@
   <v-container fluid>
     <v-row dense>
       <v-col>
-        <v-row>
-          <v-col>
-            <back-button/>
-          </v-col>
-          <v-spacer/>
-          <v-col>
-            <modify-button/>
-          </v-col>
+        <v-row justify="center">
+          <v-card class="ma-2">
+            <back-button text/>
+          </v-card>
+          <v-card class="ma-2">
+            <modify-button text/>
+          </v-card>
         </v-row>
         <v-card>
           <v-card-title>

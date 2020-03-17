@@ -1,13 +1,12 @@
 <template>
   <v-container v-if="requestsDone" fluid>
-    {{ lesson }}
-    <v-row>
-      <v-col>
-        <back-button/>
-      </v-col>
-      <v-col>
-        <modify-button/>
-      </v-col>
+    <v-row justify="center">
+      <v-card class="ma-2">
+        <back-button text/>
+      </v-card>
+      <v-card class="ma-2">
+        <modify-button text/>
+      </v-card>
     </v-row>
     <v-row>
       <v-col cols="12" md="4">
