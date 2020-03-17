@@ -29,3 +29,9 @@ extend('lessThanTime', {
     return false
   }
 })
+
+extend('arrayMinSize', {
+  validate (value, min) {
+    return value.length >= min
+  }
+})

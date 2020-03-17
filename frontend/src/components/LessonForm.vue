@@ -1,7 +1,7 @@
 <template>
   <validation-observer
     id="create-lesson"
-    v-slot="{ invalid, passes }"
+    v-slot="{ invalid, passes}"
   >
     <v-form>
       <v-container fluid>
@@ -34,48 +34,74 @@
               />
             </validation-provider>
             <!--       Выбор дат проведения занятий     -->
-            <validated-expand-field
-              :condition="weekType && weekType !== 'Определённые даты'"
+            <conditional-expand-field
+              :condition="weekType"
               name="даты семестра"
               vid="useSemesterDates"
-              :rules="{}"
               @autoscroll="onValidateAutoscroll"
             >
-              <v-checkbox
-                v-model="useSemesterDates"
-                label="Использовать даты семестра"
-                @change="onSemesterDatesChange"
-              />
-            </validated-expand-field>
-            <validated-expand-field
-              :condition="weekType && weekType !== 'Определённые даты'"
-              name="период"
-              vid="lessonPeriod"
-              :rules="{}"
-              @autoscroll="onValidateAutoscroll"
-            >
-              <v-date-picker
-                v-model="formLesson.dates"
-                range
-                full-width
-                reactive
-                first-day-of-week="1"
-                :readonly="useSemesterDates"
-              />
-            </validated-expand-field>
-            <validated-expand-field
-              :condition="weekType === 'Определённые даты'"
-              name="даты"
-              vid="lessonDates"
-              @autoscroll="onValidateAutoscroll"
-            >
-              <v-date-picker
-                v-model="formLesson.dates"
-                first-day-of-week="1"
-                multiple
-                full-width
-              />
-            </validated-expand-field>
+              <v-row>
+                <v-col>
+                  <v-checkbox
+                    v-model="useSemesterDates"
+                    :disabled="weekType === 'Определённые даты'"
+                    label="Использовать даты семестра"
+                    @change="onSemesterDatesChange"
+                  />
+                </v-col>
+                <v-col>
+                  <v-btn class="mt-3" :disabled="useSemesterDates" @click="showDatesOverlay = true">
+                    Выбрать даты
+                  </v-btn>
+                  <conditional-validation
+                    :condition="!useSemesterDates"
+                    name="диапазон недель"
+                    rules="required|arrayMinSize:2"
+                  >
+                    <input type="hidden" v-model="formLesson.dates">
+                  </conditional-validation>
+                  <v-overlay
+                    id="dateRangePickerOverlay"
+                    v-if="weekType !== 'Определённые даты'"
+                    v-model="showDatesOverlay"
+                  >
+                    <v-btn tile light @click="showDatesOverlay = false">
+                      Закрыть
+                    </v-btn>
+                    <v-date-picker
+                      v-model="formLesson.dates"
+                      range
+                      full-width
+                      first-day-of-week="1"
+                      light
+                      :readonly="useSemesterDates"
+                    />
+                  </v-overlay>
+                  <v-overlay
+                    id="datesPickerOverlay"
+                    v-if="weekType === 'Определённые даты'"
+                    v-model="showDatesOverlay"
+                  >
+                    <v-btn tile light @click="showDatesOverlay = false">
+                      Закрыть
+                    </v-btn>
+                    <conditional-validation
+                      :condition="weekType === 'Определённые даты'"
+                      name="перечисление дат"
+                      rules="required"
+                    >
+                      <v-date-picker
+                        v-model="formLesson.dates"
+                        first-day-of-week="1"
+                        full-width
+                        light
+                        multiple
+                      />
+                    </conditional-validation>
+                  </v-overlay>
+                </v-col>
+              </v-row>
+            </conditional-expand-field>
             <validated-expand-field
               :condition="weekType && weekType !== 'Определённые даты'"
               name="день недели"
@@ -175,7 +201,9 @@
                   <v-row no-gutters>
                     с
                     <v-col class="mx-1" cols="1">
-                      <validation-provider
+                      <conditional-validation
+                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                        name="timeStartHours"
                         vid="textStartTimeHours"
                         rules="required|max_value:23|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
                         v-slot="{ errors, valid }"
@@ -189,11 +217,13 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </validation-provider>
+                      </conditional-validation>
                     </v-col>
                     :
                     <v-col class="mx-1" cols="1">
-                      <validation-provider
+                      <conditional-validation
+                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                        name="timeStartMinutes"
                         vid="textStartTimeMinutes"
                         rules="required|max_value:59|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
                         v-slot="{ errors, valid }"
@@ -207,11 +237,13 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </validation-provider>
+                      </conditional-validation>
                     </v-col>
                     <span>до</span>
                     <v-col class="mx-1"  cols="1">
-                      <validation-provider
+                      <conditional-validation
+                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                        name="timeEndHours"
                         vid="textEndTimeHours"
                         rules="required|max_value:23|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
                         v-slot="{ errors, valid }"
@@ -225,11 +257,13 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </validation-provider>
+                      </conditional-validation>
                     </v-col>
                     :
                     <v-col class="mx-1"  cols="1">
-                      <validation-provider
+                      <conditional-validation
+                        :condition="!useClocksToEnterTime && customTimes === 'Создать'"
+                        name="timeEndMinutes"
                         vid="textEndTimeMinutes"
                         rules="required|max_value:59|min_value:0|lessThanTime:@textStartTimeHours,@textStartTimeMinutes,@textEndTimeHours,@textEndTimeMinutes"
                         v-slot="{ errors, valid }"
@@ -243,7 +277,7 @@
                           @input="onTextTimesChanged(valid)"
                           @change="onTextTimesChanged(valid)"
                         />
-                      </validation-provider>
+                      </conditional-validation>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -468,6 +502,7 @@ export default {
       displayTeachers: [],
       newTeacher: '',
       dayOfTheWeekChoice: '',
+      showDatesOverlay: false,
       fetchedBackEndData: {},
       useSemesterDates: false,
       useClocksToEnterTime: false,
@@ -691,13 +726,10 @@ export default {
       if (this.selectedTeachers.find((teacherName) => { return teacherName === 'Создать' })) {
         this.addTeachersField = true
         this.displayTeachers.push(this.convertTeacherNameToObject(this.newTeacher))
-        console.log('Add teachers triggered')
       } else {
         this.addTeachersField = false
-        console.log('Add teachers field disabled')
       }
       this.formLesson.teacherList = this.displayTeachers
-      this.formLesson.discipline.name = ''
     },
     convertTeacherNameToObject (teacherName) {
       // Конвертирование из имени препода в его объект
