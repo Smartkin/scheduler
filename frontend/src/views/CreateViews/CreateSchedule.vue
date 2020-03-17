@@ -92,7 +92,7 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import ScheduleService from '../services/schedule.service'
+import ScheduleService from '../../services/schedule.service'
 export default {
   components: {
     ValidationObserver,

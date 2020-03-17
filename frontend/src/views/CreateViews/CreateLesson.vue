@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import LessonService from '../services/lesson.service'
-import LessonForm from '../components/LessonForm'
+import LessonService from '../../services/lesson.service'
+import LessonForm from '../../components/LessonForm'
 
 export default {
   name: 'create-lesson',

@@ -15,13 +15,13 @@
 </template>
 
 <script>
-import BackButton from '../components/BackButton'
-import LessonService from '../services/lesson.service'
-import DisciplineService from '../services/discipline.service'
-import TimeService from '../services/time.service'
-import TypeService from '../services/type.service'
-import TeacherService from '../services/teacher.service'
-import LessonForm from '../components/LessonForm'
+import BackButton from '../../components/BackButton'
+import LessonService from '../../services/lesson.service'
+import DisciplineService from '../../services/discipline.service'
+import TimeService from '../../services/time.service'
+import TypeService from '../../services/type.service'
+import TeacherService from '../../services/teacher.service'
+import LessonForm from '../../components/LessonForm'
 
 export default {
   name: 'modify-lesson',

@@ -57,9 +57,9 @@
 </template>
 
 <script>
-import TeacherService from '../services/teacher.service'
+import TeacherService from '../../services/teacher.service'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
-import BackButton from '../components/BackButton'
+import BackButton from '../../components/BackButton'
 
 export default {
   name: 'modify-teacher',
