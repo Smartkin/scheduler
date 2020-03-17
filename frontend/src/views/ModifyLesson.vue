@@ -332,7 +332,7 @@ export default {
   name: 'modify-lesson',
   data () {
     return {
-      lessonRepeatType: ['Каждую', 'Чётные', 'Нечётные', 'Определённые даты'],
+      lessonRepeatType: ['Каждую', 'Нечётные', 'Чётные', 'Определённые даты'],
       lessonDays: ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'],
       lessonTypes: [],
       lessonTimes: [],
