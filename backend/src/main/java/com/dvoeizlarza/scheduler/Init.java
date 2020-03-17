@@ -44,7 +44,7 @@ public class Init {
         if(!scheduleService.readList().isEmpty()){
             return;
         }
-        ScheduleDto scheduleDto = new ScheduleDto(null, "МТУСИ", "ИТ", "БСТ1602", "8", LocalDate.of(2020,2,4), LocalDate.of(2020,4,30));
+        ScheduleDto scheduleDto = new ScheduleDto(null, "МТУСИ", "ИТ", "БСТ1602", "8", LocalDate.of(2020,2,5), LocalDate.of(2020,4,30));
         Schedule schedule = scheduleService.create(scheduleDto);
         DisciplineDto disciplineDto = new DisciplineDto(null, 1L, "Text", null, CertificationType.Nope);
 //        Discipline discipline = disciplineService.create(disciplineDto);
