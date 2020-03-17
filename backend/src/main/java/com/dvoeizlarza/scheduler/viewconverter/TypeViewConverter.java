@@ -16,7 +16,9 @@ public class TypeViewConverter implements Converter<Type, TypeView> {
         view.setId(type.getId());
         view.setName(type.getName());
         view.setSchedule(type.getSchedule().getId());
-        view.setTdts(type.getTdts().stream().map(TDT::getId).collect(Collectors.toList()));
+        if(type.getTdts()!=null) {
+            view.setTdts(type.getTdts().stream().map(TDT::getId).collect(Collectors.toList()));
+        }
         return view;
     }
 }

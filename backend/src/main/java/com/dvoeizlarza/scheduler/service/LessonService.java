@@ -29,6 +29,7 @@ public class LessonService {
     private TdtRepository tdtRepository;
     private LessonRepository lessonRepository;
     private LessonDateRepository lessonDateRepository;
+    private NoteRepository noteRepository;
 
     private Schedule schedule;
     private Discipline discipline;
@@ -99,11 +100,21 @@ public class LessonService {
         tdt.setType(type);
         tdtRepository.save(tdt);
 
+        List<Teacher> ts = tdt.getTeachers().stream().map(Teachers::getTeacher).collect(Collectors.toList());
         for (Teacher t : teacherList) {
+            if(ts.contains(t)){
+                ts.remove(t);
+                continue;
+            }
             Teachers teachers = new Teachers();
             teachers.setTdt(tdt);
             teachers.setTeacher(t);
             teachersRepository.save(teachers);
+        }
+        for(Teachers t: tdt.getTeachers()){
+            if(ts.contains(t.getTeacher())){
+                teachersRepository.delete(t);
+            }
         }
 
         lesson.setTdt(tdt);
@@ -115,13 +126,26 @@ public class LessonService {
             dto.setDates(getDates(dto));
         }
 
+        List<LocalDate> dates = lesson.getLessonDates().stream().map(LessonDate::getDate).collect(Collectors.toList());
         for (LocalDate d : dto.getDates()) {
+            if(dates.contains(d)){
+                dates.remove(d);
+                continue;
+            }
             LessonDate lessonDate = new LessonDate();
             lessonDate.setSchedule(schedule);
             lessonDate.setDate(d);
             lessonDate.setLesson(lesson);
             lessonDate.setLessonDateStatus(LessonDateStatus.Planned);
             lessonDateRepository.save(lessonDate);
+        }
+        for(LessonDate ld: lesson.getLessonDates()){
+            if(dates.contains(ld.getDate())){
+                for (Note n: ld.getNotes()){
+                    noteRepository.delete(n);
+                }
+                lessonDateRepository.delete(ld);
+            }
         }
         return lesson;
     }
@@ -271,5 +295,10 @@ public class LessonService {
     @Autowired
     public void setLessonDateRepository(LessonDateRepository lessonDateRepository) {
         this.lessonDateRepository = lessonDateRepository;
+    }
+
+    @Autowired
+    public void setNoteRepository(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
     }
 }

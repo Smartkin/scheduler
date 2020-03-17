@@ -18,7 +18,9 @@ public class TimeViewConverter implements Converter<Time, TimeView> {
         view.setName(time.getName());
         view.setBegin(time.getBegin());
         view.setEnd(time.getEnd());
-        view.setLessons(time.getLessons().stream().map(Lesson::getId).collect(Collectors.toList()));
+        if(time.getLessons()!=null) {
+            view.setLessons(time.getLessons().stream().map(Lesson::getId).collect(Collectors.toList()));
+        }
         return view;
     }
 }
