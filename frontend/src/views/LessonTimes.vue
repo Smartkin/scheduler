@@ -8,7 +8,7 @@
           min-width="350"
           flat
         >
-          Типы пар
+          Времена пар
         </v-card>
         <v-card
           flat
@@ -16,11 +16,11 @@
           max-width="350"
           min-width="350"
           class="mx-auto"
-          v-for="(type, i) in types" :key="i"
-          :to="'/type/' + type.id + '/modify'"
+          v-for="(time, i) in times" :key="i"
+          :to="'/time/' + time.id + '/modify'"
         >
           <div class="text-center">
-            {{ type.name }}
+            {{ time.name }}
           </div>
         </v-card>
         <v-card
@@ -28,9 +28,9 @@
           max-width="350"
           min-width="350"
           flat
-          to="/create_type"
+          to="/create_time"
         >
-          Создать тип
+          Создать время
         </v-card>
       </v-col>
     </v-row>
@@ -38,16 +38,16 @@
 </template>
 
 <script>
-import TypeService from '../services/type.service'
+import TimeService from '../services/time.service'
 export default {
   data () {
     return {
-      types: []
+      times: []
     }
   },
   mounted () {
-    TypeService.get().then(types => {
-      this.types = types
+    TimeService.get().then(times => {
+      this.times = times
     })
   }
 }

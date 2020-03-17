@@ -80,6 +80,10 @@ export default {
         {
           name: 'Тип пар',
           link: '/types'
+        },
+        {
+          name: 'Времён пар',
+          link: '/times'
         }
       ]
     }

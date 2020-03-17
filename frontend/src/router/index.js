@@ -94,6 +94,17 @@ const routes = [
     path: '/create_time',
     name: 'create_time',
     component: () => import('../views/CreateViews/CreateLessonTime')
+  },
+  {
+    path: '/times',
+    name: 'lesson_times',
+    component: () => import('../views/LessonTimes')
+  },
+  {
+    path: '/time/:id/modify',
+    name: 'modify_time',
+    component: () => import('../views/ModifyViews/ModifyLessonTime'),
+    props: true
   }
 ]
 

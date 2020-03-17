@@ -59,7 +59,7 @@ export default {
   methods: {
     createNewType () {
       TypeService.modify(this.id, this.editType).then(() => {
-        this.$router.push('')
+        this.$router.push('/types')
       })
     }
   }
