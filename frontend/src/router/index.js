@@ -115,6 +115,18 @@ const routes = [
     path: '/disciplines',
     name: 'disciplines',
     component: () => import('../views/Disciplines')
+  },
+  {
+    path: '/discipline/:id',
+    name: 'discipline',
+    component: () => import('../views/Discipline'),
+    props: true
+  },
+  {
+    path: '/discipline/:id/modify',
+    name: 'modify_discipline',
+    component: () => import('../views/ModifyViews/ModifyDiscipline'),
+    props: true
   }
 ]
 
