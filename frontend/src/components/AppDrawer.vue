@@ -22,14 +22,36 @@
       <v-list
         expand
       >
-        <v-list-item to="/create_lesson">
-          <v-list-item-icon>
-            <v-icon>mdi-calendar-plus</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Создать пару</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <v-list-group>
+          <template v-slot:activator>
+            <v-list-item-title>Создать</v-list-item-title>
+          </template>
+          <v-card tile flat>
+            <v-list-item
+              v-for="(createItem, i) in createLinks"
+              :key="i"
+              link
+              :to="createItem.link"
+            >
+              <v-list-item-title v-text="createItem.name"/>
+            </v-list-item>
+          </v-card>
+        </v-list-group>
+        <v-list-group>
+          <template v-slot:activator>
+            <v-list-item-title>Список</v-list-item-title>
+          </template>
+          <v-card tile flat>
+            <v-list-item
+              v-for="(listingItem, i) in listingLinks"
+              :key="i"
+              link
+              :to="listingItem.link"
+            >
+              <v-list-item-title v-text="listingItem.name"/>
+            </v-list-item>
+          </v-card>
+        </v-list-group>
         <v-list-item to="/about">
           <v-list-item-icon>
             <v-icon>mdi-information</v-icon>
@@ -62,7 +84,43 @@ export default {
       currentDrawer: false,
       schedules: [{
         groupName: 'БСТ1602'
-      }]
+      }],
+      createLinks: [
+        {
+          name: 'Расписание',
+          link: '/create_schedule'
+        },
+        {
+          name: 'Пару',
+          link: '/create_lesson'
+        },
+        {
+          name: 'Преподавателя',
+          link: '/create_teacher'
+        },
+        {
+          name: 'Тип пары',
+          link: '/create_type'
+        },
+        {
+          name: 'Время пары',
+          link: '/create_time'
+        }
+      ],
+      listingLinks: [
+        {
+          name: 'Преподавателей',
+          link: '/teachers'
+        },
+        {
+          name: 'Тип пар',
+          link: '/types'
+        },
+        {
+          name: 'Времён пар',
+          link: '/times'
+        }
+      ]
     }
   },
   mounted () {

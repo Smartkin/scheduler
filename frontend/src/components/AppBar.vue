@@ -10,20 +10,20 @@
     </router-link>
     <v-toolbar-items v-if="$vuetify.breakpoint.lgAndUp">
       <v-list-group>
-      <template v-slot:activator>
-        <v-list-item-title>Создать</v-list-item-title>
-      </template>
-      <v-card tile flat>
-        <v-list-item
-          v-for="(createItem, i) in createLinks"
-          :key="i"
-          link
-          :to="createItem.link"
-        >
-          <v-list-item-title v-text="createItem.name"/>
-        </v-list-item>
-      </v-card>
-    </v-list-group>
+        <template v-slot:activator>
+          <v-list-item-title>Создать</v-list-item-title>
+        </template>
+        <v-card tile flat>
+          <v-list-item
+            v-for="(createItem, i) in createLinks"
+            :key="i"
+            link
+            :to="createItem.link"
+          >
+            <v-list-item-title v-text="createItem.name"/>
+          </v-list-item>
+        </v-card>
+      </v-list-group>
       <v-list-group>
         <template v-slot:activator>
           <v-list-item-title>Список</v-list-item-title>
@@ -39,7 +39,6 @@
           </v-list-item>
         </v-card>
       </v-list-group>
-<!--      <v-btn depressed to="/teachers">Список преподавателей</v-btn>-->
       <v-btn depressed to="/about">О приложении</v-btn>
     </v-toolbar-items>
   </v-app-bar>
@@ -70,6 +69,10 @@ export default {
         {
           name: 'Время пары',
           link: '/create_time'
+        },
+        {
+          name: 'Дисциплину',
+          link: '/create_discipline'
         }
       ],
       listingLinks: [
@@ -84,6 +87,10 @@ export default {
         {
           name: 'Времён пар',
           link: '/times'
+        },
+        {
+          name: 'Дисциплин',
+          link: '/disciplines'
         }
       ]
     }

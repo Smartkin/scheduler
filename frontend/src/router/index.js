@@ -105,6 +105,16 @@ const routes = [
     name: 'modify_time',
     component: () => import('../views/ModifyViews/ModifyLessonTime'),
     props: true
+  },
+  {
+    path: '/create_discipline',
+    name: 'create_discipline',
+    component: () => import('../views/CreateViews/CreateDiscipline')
+  },
+  {
+    path: '/disciplines',
+    name: 'disciplines',
+    component: () => import('../views/Disciplines')
   }
 ]
 
