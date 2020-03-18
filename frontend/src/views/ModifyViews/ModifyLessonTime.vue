@@ -236,8 +236,6 @@ export default {
   },
   methods: {
     onTextTimesChanged (valid) {
-      console.log(this.textTimesStart)
-      console.log(this.textTimesEnd)
       if (valid) {
         if (this.textTimesStart[0] !== '' && this.textTimesStart[1] !== '') {
           if (this.textTimesStart[0].length === 1) {

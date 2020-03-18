@@ -127,6 +127,12 @@ const routes = [
     name: 'modify_discipline',
     component: () => import('../views/ModifyViews/ModifyDiscipline'),
     props: true
+  },
+  {
+    path: '/lesson_date/:id/modify',
+    name: 'modify_lesson_date',
+    component: () => import('../views/ModifyViews/ModifyLessonDate'),
+    props: true
   }
 ]
 

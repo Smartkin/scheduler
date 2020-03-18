@@ -105,6 +105,10 @@ export default {
         {
           name: 'Время пары',
           link: '/create_time'
+        },
+        {
+          name: 'Дисциплину',
+          link: '/create_discipline'
         }
       ],
       listingLinks: [
@@ -119,6 +123,10 @@ export default {
         {
           name: 'Времён пар',
           link: '/times'
+        },
+        {
+          name: 'Дисциплин',
+          link: '/disciplines'
         }
       ]
     }
