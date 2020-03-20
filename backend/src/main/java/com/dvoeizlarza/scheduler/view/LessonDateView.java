@@ -1,5 +1,6 @@
 package com.dvoeizlarza.scheduler.view;
 
+import com.dvoeizlarza.scheduler.enums.LessonDateStatus;
 import com.dvoeizlarza.scheduler.enums.NoteType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class LessonDateView {
     private LocalDate date;
     private LocalTime start;
     private LocalTime end;
+    private LessonDateStatus status;
     private String discipline;
     private String type;
     private List<String> teachers;

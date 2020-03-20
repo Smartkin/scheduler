@@ -5,6 +5,7 @@ import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.entity.Teacher;
 import com.dvoeizlarza.scheduler.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,6 +59,11 @@ public class TeacherService implements CRLUD<Teacher, TeacherDto> {
     }
 
     public Teacher delete(Long id) {
+        try {
+            teacherRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            return read(id);
+        }
         return null;
     }
 

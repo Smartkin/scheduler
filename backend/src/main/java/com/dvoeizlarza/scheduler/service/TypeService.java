@@ -5,6 +5,7 @@ import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.entity.Type;
 import com.dvoeizlarza.scheduler.repository.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,38 +15,38 @@ public class TypeService implements CRLUD<Type, TypeDto> {
     private TypeRepository typeRepository;
     private ScheduleService scheduleService;
 
-    public Type create(TypeDto dto){
+    public Type create(TypeDto dto) {
         return modify(null, dto);
     }
 
-    public Type read(Long id){
+    public Type read(Long id) {
         return typeRepository.findById(id).orElse(null);
     }
 
-    public Type readOrCreate(TypeDto dto){
-        if(dto==null){
+    public Type readOrCreate(TypeDto dto) {
+        if (dto == null) {
             return null;
         }
         Type type = null;
-        if(dto.getId()!=null){
+        if (dto.getId() != null) {
             type = read(dto.getId());
-            if(!type.getSchedule().getId().equals(dto.getSchId())){
+            if (!type.getSchedule().getId().equals(dto.getSchId())) {
                 type = null;
             }
         }
-        if(type==null){
+        if (type == null) {
             type = create(dto);
         }
         return type;
     }
 
-    public List<Type> readList(Long schId){
+    public List<Type> readList(Long schId) {
         return typeRepository.findByScheduleId(schId);
     }
 
-    public Type modify(Long id, TypeDto dto){
+    public Type modify(Long id, TypeDto dto) {
         Schedule schedule = scheduleService.read(dto.getSchId());
-        if(schedule==null){
+        if (schedule == null) {
             return null;
         }
         Type type = new Type();
@@ -56,7 +57,12 @@ public class TypeService implements CRLUD<Type, TypeDto> {
         return type;
     }
 
-    public Type delete(Long id){
+    public Type delete(Long id) {
+        try {
+            typeRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            return read(id);
+        }
         return null;
     }
 

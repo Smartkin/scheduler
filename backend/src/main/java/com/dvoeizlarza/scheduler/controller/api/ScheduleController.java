@@ -38,6 +38,17 @@ public class ScheduleController {
         return ResponseEntity.ok("Success");
     }
 
+
+    @PostMapping("delete")
+    @ResponseBody
+    ResponseEntity<String> delete(@RequestParam Long id){
+        if(scheduleService.delete(id)==null){
+            return ResponseEntity.ok("Success");
+        }else {
+            return ResponseEntity.badRequest().body("There are child elements");
+        }
+    }
+
     @Autowired
     public void setScheduleViewConverter(ScheduleViewConverter scheduleViewConverter) {
         this.scheduleViewConverter = scheduleViewConverter;

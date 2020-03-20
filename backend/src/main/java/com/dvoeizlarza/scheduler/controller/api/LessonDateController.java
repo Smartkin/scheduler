@@ -43,6 +43,17 @@ public class LessonDateController {
         return ResponseEntity.ok("Success");
     }
 
+
+    @PostMapping("delete")
+    @ResponseBody
+    ResponseEntity<String> delete(@RequestParam Long id){
+        if(lessonDateService.delete(id)!=null){
+            return ResponseEntity.ok("Success");
+        }else {
+            return ResponseEntity.badRequest().body("Invalid ID");
+        }
+    }
+
     @Autowired
     public void setLessonDateService(LessonDateService lessonDateService) {
         this.lessonDateService = lessonDateService;

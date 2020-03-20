@@ -4,11 +4,13 @@ import com.dvoeizlarza.scheduler.entity.LessonDate;
 import com.dvoeizlarza.scheduler.entity.Note;
 import com.dvoeizlarza.scheduler.entity.TDT;
 import com.dvoeizlarza.scheduler.entity.Time;
+import com.dvoeizlarza.scheduler.enums.LessonDateStatus;
 import com.dvoeizlarza.scheduler.enums.NoteType;
 import com.dvoeizlarza.scheduler.view.LessonDateView;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +29,14 @@ public class LessonDateViewConverter implements Converter<LessonDate, LessonDate
         view.setDiscipline(tdt.getDiscipline().getName());
         view.setStart(time.getBegin());
         view.setEnd(time.getEnd());
+        if(lessonDate.getLessonDateStatus().equals(LessonDateStatus.Planned)
+                && LocalTime.now().isAfter(view.getStart())
+                && LocalTime.now().isBefore(view.getEnd())
+                && LocalDate.now().equals(view.getDate())){
+            view.setStatus(LessonDateStatus.Now);
+        }else {
+            view.setStatus(lessonDate.getLessonDateStatus());
+        }
         view.setTeachers(tdt.getTeachers().stream().map(x->x.getTeacher().getName()).collect(Collectors.toList()));
         view.setType(tdt.getType().getName());
         view.setAuditorium(lessonDate.getLesson().getAuditorium());

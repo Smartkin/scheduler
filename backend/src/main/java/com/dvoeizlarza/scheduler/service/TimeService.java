@@ -7,6 +7,7 @@ import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.entity.Time;
 import com.dvoeizlarza.scheduler.repository.TimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,38 +17,38 @@ public class TimeService implements CRLUD<Time, TimeDto> {
     private TimeRepository timeRepository;
     private ScheduleService scheduleService;
 
-    public Time create(TimeDto dto){
+    public Time create(TimeDto dto) {
         return modify(null, dto);
     }
 
-    public Time read(Long id){
+    public Time read(Long id) {
         return timeRepository.findById(id).orElse(null);
     }
 
-    public Time readOrCreate(TimeDto dto){
-        if(dto==null){
+    public Time readOrCreate(TimeDto dto) {
+        if (dto == null) {
             return null;
         }
         Time time = null;
-        if(dto.getId()!=null){
+        if (dto.getId() != null) {
             time = read(dto.getId());
-            if(!time.getSchedule().getId().equals(dto.getSchId())){
+            if (!time.getSchedule().getId().equals(dto.getSchId())) {
                 time = null;
             }
         }
-        if(time==null){
+        if (time == null) {
             time = create(dto);
         }
         return time;
     }
 
-    public List<Time> readList(Long schId){
+    public List<Time> readList(Long schId) {
         return timeRepository.findByScheduleId(schId);
     }
 
-    public Time modify(Long id, TimeDto dto){
+    public Time modify(Long id, TimeDto dto) {
         Schedule schedule = scheduleService.read(dto.getSchId());
-        if(schedule==null){
+        if (schedule == null) {
             return null;
         }
         Time time = new Time();
@@ -60,7 +61,12 @@ public class TimeService implements CRLUD<Time, TimeDto> {
         return time;
     }
 
-    public Time delete(Long id){
+    public Time delete(Long id) {
+        try {
+            timeRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            return read(id);
+        }
         return null;
     }
 

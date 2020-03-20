@@ -3,11 +3,14 @@ package com.dvoeizlarza.scheduler.service;
 import com.dvoeizlarza.scheduler.dto.NoteDto;
 import com.dvoeizlarza.scheduler.entity.LessonDate;
 import com.dvoeizlarza.scheduler.entity.Note;
+import com.dvoeizlarza.scheduler.enums.LessonDateStatus;
+import com.dvoeizlarza.scheduler.enums.NoteType;
 import com.dvoeizlarza.scheduler.repository.LessonDateRepository;
 import com.dvoeizlarza.scheduler.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.lang.model.type.NoType;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,8 +24,7 @@ public class LessonDateService {
     }
 
     public List<LessonDate> readList(Long schId, LocalDate date, int count) {
-        List<LessonDate> lessonDates = lessonDateRepository.findBySchIdBetweenDates(schId, date, date.plusDays(count));
-        return lessonDates;
+        return lessonDateRepository.findBySchIdBetweenDates(schId, date, date.plusDays(count));
     }
 
     public Note modify(NoteDto dto) {
@@ -37,7 +39,14 @@ public class LessonDateService {
     }
 
     public LessonDate delete(Long id) {
-        return null;
+        LessonDate lessonDate = read(id);
+        LessonDateStatus status = lessonDate.getLessonDateStatus();
+        if(status.equals(LessonDateStatus.Cancelled)){
+            lessonDate.setLessonDateStatus(LessonDateStatus.Planned);
+        }else {
+            lessonDate.setLessonDateStatus(LessonDateStatus.Cancelled);
+        }
+        return lessonDate;
     }
 
     @Autowired

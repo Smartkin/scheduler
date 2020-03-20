@@ -47,6 +47,17 @@ public class TeacherController {
         return ResponseEntity.ok("Success");
     }
 
+
+    @PostMapping("delete")
+    @ResponseBody
+    ResponseEntity<String> delete(@RequestParam Long id){
+        if(teacherService.delete(id)==null){
+            return ResponseEntity.ok("Success");
+        }else {
+            return ResponseEntity.badRequest().body("There are child elements");
+        }
+    }
+
     @Autowired
     public void setTeacherViewConverter(TeacherViewConverter teacherViewConverter) {
         this.teacherViewConverter = teacherViewConverter;

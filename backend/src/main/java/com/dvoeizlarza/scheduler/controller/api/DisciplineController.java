@@ -47,6 +47,16 @@ public class DisciplineController {
         return ResponseEntity.ok("Success");
     }
 
+    @PostMapping("delete")
+    @ResponseBody
+    ResponseEntity<String> delete(@RequestParam Long id){
+        if(disciplineService.delete(id)==null){
+            return ResponseEntity.ok("Success");
+        }else {
+            return ResponseEntity.badRequest().body("There are child elements");
+        }
+    }
+
     @Autowired
     public void setDisciplineService(DisciplineService disciplineService) {
         this.disciplineService = disciplineService;

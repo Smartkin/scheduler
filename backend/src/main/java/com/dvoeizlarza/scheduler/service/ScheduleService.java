@@ -4,6 +4,7 @@ import com.dvoeizlarza.scheduler.dto.ScheduleDto;
 import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -55,6 +56,11 @@ public class ScheduleService implements CRLUD<Schedule, ScheduleDto> {
     }
 
     public Schedule delete(Long id) {
+        try {
+            scheduleRepository.deleteById(id);
+        }catch (DataIntegrityViolationException e){
+            return read(id);
+        }
         return null;
     }
 

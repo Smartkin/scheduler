@@ -7,6 +7,7 @@ import com.dvoeizlarza.scheduler.enums.WeekType;
 import com.dvoeizlarza.scheduler.repository.*;
 import com.dvoeizlarza.scheduler.view.LessonView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -92,7 +93,7 @@ public class LessonService {
     public Lesson modify(Long id, LessonDto dto) {
         postValidate(dto);
         Lesson lesson = lessonRepository.findById(id).orElse(null);
-        if(lesson==null){
+        if (lesson == null) {
             return null;
         }
         TDT tdt = lesson.getTdt();
@@ -102,7 +103,7 @@ public class LessonService {
 
         List<Teacher> ts = tdt.getTeachers().stream().map(Teachers::getTeacher).collect(Collectors.toList());
         for (Teacher t : teacherList) {
-            if(ts.contains(t)){
+            if (ts.contains(t)) {
                 ts.remove(t);
                 continue;
             }
@@ -111,8 +112,8 @@ public class LessonService {
             teachers.setTeacher(t);
             teachersRepository.save(teachers);
         }
-        for(Teachers t: tdt.getTeachers()){
-            if(ts.contains(t.getTeacher())){
+        for (Teachers t : tdt.getTeachers()) {
+            if (ts.contains(t.getTeacher())) {
                 teachersRepository.delete(t);
             }
         }
@@ -128,7 +129,7 @@ public class LessonService {
 
         List<LocalDate> dates = lesson.getLessonDates().stream().map(LessonDate::getDate).collect(Collectors.toList());
         for (LocalDate d : dto.getDates()) {
-            if(dates.contains(d)){
+            if (dates.contains(d)) {
                 dates.remove(d);
                 continue;
             }
@@ -139,15 +140,34 @@ public class LessonService {
             lessonDate.setLessonDateStatus(LessonDateStatus.Planned);
             lessonDateRepository.save(lessonDate);
         }
-        for(LessonDate ld: lesson.getLessonDates()){
-            if(dates.contains(ld.getDate())){
-                for (Note n: ld.getNotes()){
+        for (LessonDate ld : lesson.getLessonDates()) {
+            if (dates.contains(ld.getDate())) {
+                for (Note n : ld.getNotes()) {
                     noteRepository.delete(n);
                 }
                 lessonDateRepository.delete(ld);
             }
         }
         return lesson;
+    }
+
+    public Lesson delete(Long id) {
+        Lesson lesson = lessonRepository.findById(id).orElse(null);
+        if (lesson == null) {
+            return null;
+        }
+        TDT tdt = lesson.getTdt();
+        try {
+            lessonRepository.delete(lesson);
+        } catch (DataIntegrityViolationException e) {
+            return lesson;
+        }
+        try {
+            tdtRepository.delete(tdt);
+        } catch (DataIntegrityViolationException e) {
+            return null;
+        }
+        return null;
     }
 
     private void postValidate(LessonDto dto) {
@@ -185,7 +205,7 @@ public class LessonService {
         int step = dto.getWeekType().equals(WeekType.Any) ? 7 : 14;
         while (date.isBefore(dto.getEndDate())) {
             if (flag) {
-                int evenOdd = (date.get(woy) - defWeek)%2;
+                int evenOdd = (date.get(woy) - defWeek) % 2;
                 if (evenOdd == 1 && dto.getWeekType().equals(WeekType.Odd) || evenOdd == 0 && dto.getWeekType().equals(WeekType.Even)) {
                     date = date.plusDays(1L);
                     continue;

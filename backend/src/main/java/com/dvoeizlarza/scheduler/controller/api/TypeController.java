@@ -48,6 +48,17 @@ public class TypeController {
         return ResponseEntity.ok("Success");
     }
 
+
+    @PostMapping("delete")
+    @ResponseBody
+    ResponseEntity<String> delete(@RequestParam Long id){
+        if(typeService.delete(id)==null){
+            return ResponseEntity.ok("Success");
+        }else {
+            return ResponseEntity.badRequest().body("There are child elements");
+        }
+    }
+
     @Autowired
     public void setTypeService(TypeService typeService) {
         this.typeService = typeService;

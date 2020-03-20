@@ -6,6 +6,7 @@ import com.dvoeizlarza.scheduler.entity.Schedule;
 import com.dvoeizlarza.scheduler.repository.DisciplineRepository;
 import com.dvoeizlarza.scheduler.view.DisciplineView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,35 +20,35 @@ public class DisciplineService implements CRLUD<Discipline, DisciplineDto> {
         return modify(null, dto);
     }
 
-    public Discipline read(Long id){
+    public Discipline read(Long id) {
         return disciplineRepository.findById(id).orElse(null);
     }
 
-    public Discipline readOrCreate(DisciplineDto dto){
-        if(dto==null){
+    public Discipline readOrCreate(DisciplineDto dto) {
+        if (dto == null) {
             return null;
         }
         Discipline discipline = null;
-        if(dto.getId()!=null){
+        if (dto.getId() != null) {
             discipline = read(dto.getId());
-            if(!discipline.getSchedule().getId().equals(dto.getSchId())){
+            if (!discipline.getSchedule().getId().equals(dto.getSchId())) {
                 discipline = null;
             }
         }
-        if(discipline==null){
+        if (discipline == null) {
             discipline = create(dto);
         }
         return discipline;
     }
 
-    public List<Discipline> readList(Long schId){
+    public List<Discipline> readList(Long schId) {
         return disciplineRepository.findByScheduleId(schId);
     }
 
 
     public Discipline modify(Long id, DisciplineDto dto) {
         Schedule schedule = scheduleService.read(dto.getSchId());
-        if(schedule==null){
+        if (schedule == null) {
             return null;
         }
         Discipline discipline = new Discipline();
@@ -61,6 +62,11 @@ public class DisciplineService implements CRLUD<Discipline, DisciplineDto> {
     }
 
     public Discipline delete(Long id) {
+        try {
+            disciplineRepository.deleteById(id);
+        } catch (DataIntegrityViolationException e) {
+            return read(id);
+        }
         return null;
     }
 

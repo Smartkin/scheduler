@@ -61,6 +61,7 @@ public class Init {
         lessonDateService.modify(noteDto2);
         NoteDto noteDto3 = new NoteDto(null, 2L, NoteType.Auditorium, "E-99", "Ещё раз аудиторию");
         lessonDateService.modify(noteDto3);
+        teacherService.delete(1L);
 
         Set<Role> roles = new HashSet<>();
         roles.add(Role.ROLE_USER);
