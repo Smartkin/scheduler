@@ -10,7 +10,6 @@ import com.dvoeizlarza.scheduler.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.lang.model.type.NoType;
 import java.time.LocalDate;
 import java.util.List;
 
