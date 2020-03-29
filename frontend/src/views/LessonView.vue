@@ -18,20 +18,22 @@
             {{ lessonWeekType }}
           </v-label>
           <div/>
-          День недели:
-          <v-label>
-            {{ lessonWeekday }}
-          </v-label>
-          <div/>
-          Период:
-          <span class="primary--text">
-            {{ lesson.startDate }}
-          </span>
-          по
-          <span class="primary--text">
-            {{ lesson.endDate }}
-          </span>
-          <div/>
+          <div v-if="lessonWeekType !== 'Определённые даты'">
+            День недели:
+            <v-label>
+              {{ lessonWeekday }}
+            </v-label>
+            <div/>
+            Период:
+            <span class="primary--text">
+              {{ lesson.startDate }}
+            </span>
+            по
+            <span class="primary--text">
+              {{ lesson.endDate }}
+            </span>
+            <div/>
+          </div>
           Время пары:
           <span class="red--text">
             {{ lessonTimeBegin }}
