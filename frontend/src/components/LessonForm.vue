@@ -70,9 +70,9 @@
                     </v-btn>
                     <v-date-picker
                       v-model="formLesson.dates"
-                      style="border-top-left-radius: 0; border-top-right-radius: 0"
+                      style="border-top-left-radius: 0; border-top-right-radius: 0; max-width: 400px"
                       range
-                      width="500px"
+                      full-width
                       first-day-of-week="1"
                       light
                       :readonly="useSemesterDates"
@@ -93,9 +93,9 @@
                     >
                       <v-date-picker
                         v-model="formLesson.dates"
-                        style="border-top-left-radius: 0; border-top-right-radius: 0"
+                        style="border-top-left-radius: 0; border-top-right-radius: 0; max-width: 400px"
                         first-day-of-week="1"
-                        width="500px"
+                        full-width
                         light
                         multiple
                       />

@@ -18,8 +18,8 @@
             </v-btn>
             <v-date-picker
               v-model="customSelectDate"
-              style="border-top-left-radius: 0; border-top-right-radius: 0"
-              width="500px"
+              style="border-top-left-radius: 0; border-top-right-radius: 0; max-width: 400px"
+              full-width
               :min="currentSchedule ? currentSchedule.start : null"
               :max="currentSchedule ? currentSchedule.stop : null"
               first-day-of-week="1"
