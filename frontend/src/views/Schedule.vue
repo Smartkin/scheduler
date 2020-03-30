@@ -12,6 +12,8 @@
           <v-btn block text @click="selectDateOverlay = true">
             {{ getCurrentDate }}
           </v-btn>
+          <v-divider/>
+          {{ dayOfTheWeekString }}
           <v-overlay v-model="selectDateOverlay">
             <v-btn color="primary" tile block light @click="selectDateOverlay = false">
               Закрыть
@@ -27,13 +29,12 @@
               light
             />
           </v-overlay>
-          <v-divider/>
           <v-card-actions>
             <v-btn @click="prevDay" icon>
               <v-icon>mdi-chevron-left</v-icon>
             </v-btn>
             <v-spacer/>
-            {{ weekNum }} неделя
+              {{ weekNum }} неделя
             <v-spacer/>
             <v-btn @click="nextDay" icon>
               <v-icon>mdi-chevron-right</v-icon>
@@ -92,11 +93,33 @@ export default {
     weekNum () {
       if (this.currentSchedule) {
         let scheduleStartDate = new Date(this.currentSchedule.start)
+        scheduleStartDate.setDate(scheduleStartDate.getDate() - scheduleStartDate.getDay() + 1)
         let selDate = new Date(this.getCurrentDate)
         let elapsedTime = selDate.getTime() - scheduleStartDate.getTime()
         return Math.floor(elapsedTime / (1000 * 60 * 60 * 24 * 7)) + 1
       }
       return 0
+    },
+    dayOfTheWeekString () {
+      let date = new Date(this.getCurrentDate)
+      switch (date.getDay()) {
+        case 1:
+          return 'Понедельник'
+        case 2:
+          return 'Вторник'
+        case 3:
+          return 'Среда'
+        case 4:
+          return 'Четверг'
+        case 5:
+          return 'Пятница'
+        case 6:
+          return 'Суббота'
+        case 0:
+          return 'Воскресенье'
+        default:
+          return 'Понедельник'
+      }
     }
   },
   watch: {
