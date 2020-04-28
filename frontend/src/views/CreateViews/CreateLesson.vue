@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     createLesson () {
-      console.log('Modify lesson:')
+      console.log('Create lesson:')
       console.log(this.newLesson)
       LessonService.create(this.newLesson).then(() => {
         this.$router.push('/schedule/' + this.currentSchedule.id)

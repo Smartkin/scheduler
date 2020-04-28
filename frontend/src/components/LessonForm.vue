@@ -65,11 +65,12 @@
                     v-if="weekType !== 'Определённые даты'"
                     v-model="showDatesOverlay"
                   >
-                    <v-btn tile light @click="showDatesOverlay = false">
+                    <v-btn color="primary" tile block light @click="showDatesOverlay = false">
                       Закрыть
                     </v-btn>
                     <v-date-picker
                       v-model="formLesson.dates"
+                      style="border-top-left-radius: 0; border-top-right-radius: 0; max-width: 400px"
                       range
                       full-width
                       first-day-of-week="1"
@@ -82,7 +83,7 @@
                     v-if="weekType === 'Определённые даты'"
                     v-model="showDatesOverlay"
                   >
-                    <v-btn tile light @click="showDatesOverlay = false">
+                    <v-btn color="primary" tile block light @click="showDatesOverlay = false">
                       Закрыть
                     </v-btn>
                     <conditional-validation
@@ -92,6 +93,7 @@
                     >
                       <v-date-picker
                         v-model="formLesson.dates"
+                        style="border-top-left-radius: 0; border-top-right-radius: 0; max-width: 400px"
                         first-day-of-week="1"
                         full-width
                         light
@@ -505,7 +507,7 @@ export default {
       selectedTeachers: [],
       displayTeachers: [],
       newTeacher: '',
-      dayOfTheWeekChoice: '',
+      dayOfTheWeekChoice: 0,
       showDatesOverlay: false,
       fetchedBackEndData: {},
       useSemesterDates: false,
@@ -636,8 +638,10 @@ export default {
       console.log(this.formLesson)
       this.submitLesson()
       // Вернуть даты на место
-      this.formLesson.dates.push(this.formLesson.startDate)
-      this.formLesson.dates.push(this.formLesson.endDate)
+      if (this.weekType !== 'Определённые даты') {
+        this.formLesson.dates.push(this.formLesson.startDate)
+        this.formLesson.dates.push(this.formLesson.endDate)
+      }
     },
     onValidateAutoscroll (elem) {
       this.$vuetify.goTo(elem.$el, elem.options)
@@ -656,7 +660,7 @@ export default {
     },
     onWeekTypeChanged () {
       this.formLesson.dates.splice(0, this.formLesson.dates.length)
-      this.dayOfTheWeekChoice = ''
+      this.dayOfTheWeekChoice = 0
       this.useSemesterDates = false
     },
     onSemesterDatesChange () {

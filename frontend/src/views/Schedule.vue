@@ -9,11 +9,32 @@
           dark
           flat
         >
-          {{ selectedDate.toISOString().slice(0, selectedDate.toISOString().indexOf('T')) }}
+          <v-btn block text @click="selectDateOverlay = true">
+            {{ getCurrentDate }}
+          </v-btn>
+          <v-divider/>
+          {{ dayOfTheWeekString }}
+          <v-overlay v-model="selectDateOverlay">
+            <v-btn color="primary" tile block light @click="selectDateOverlay = false">
+              Закрыть
+            </v-btn>
+            <v-date-picker
+              v-model="customSelectDate"
+              style="border-top-left-radius: 0; border-top-right-radius: 0; max-width: 400px"
+              full-width
+              :min="currentSchedule ? currentSchedule.start : null"
+              :max="currentSchedule ? currentSchedule.stop : null"
+              first-day-of-week="1"
+              @click:date="updateDatesAndLessons"
+              light
+            />
+          </v-overlay>
           <v-card-actions>
             <v-btn @click="prevDay" icon>
               <v-icon>mdi-chevron-left</v-icon>
             </v-btn>
+            <v-spacer/>
+              {{ weekNum }} неделя
             <v-spacer/>
             <v-btn @click="nextDay" icon>
               <v-icon>mdi-chevron-right</v-icon>
@@ -45,6 +66,8 @@ export default {
     return {
       lessons: [],
       selectedDate: new Date(),
+      customSelectDate: new Date().toISOString().slice(0, new Date().toISOString().indexOf('T')),
+      selectDateOverlay: false,
       test: false
     }
   },
@@ -57,8 +80,46 @@ export default {
     ClassCard
   },
   computed: {
+    getCurrentDate () {
+      let date = new Date(this.customSelectDate)
+      if (this.selectDateOverlay || this.customSelectDate !== this.getLocalDateString(this.selectedDate)) {
+        return this.getLocalDateString(date)
+      }
+      return this.getLocalDateString(this.selectedDate)
+    },
     currentSchedule () {
       return this.$store.state.schedule.sch
+    },
+    weekNum () {
+      if (this.currentSchedule) {
+        let scheduleStartDate = new Date(this.currentSchedule.start)
+        scheduleStartDate.setDate(scheduleStartDate.getDate() - scheduleStartDate.getDay() + 1)
+        let selDate = new Date(this.getCurrentDate)
+        let elapsedTime = selDate.getTime() - scheduleStartDate.getTime()
+        return Math.floor(elapsedTime / (1000 * 60 * 60 * 24 * 7)) + 1
+      }
+      return 0
+    },
+    dayOfTheWeekString () {
+      let date = new Date(this.getCurrentDate)
+      switch (date.getDay()) {
+        case 1:
+          return 'Понедельник'
+        case 2:
+          return 'Вторник'
+        case 3:
+          return 'Среда'
+        case 4:
+          return 'Четверг'
+        case 5:
+          return 'Пятница'
+        case 6:
+          return 'Суббота'
+        case 0:
+          return 'Воскресенье'
+        default:
+          return 'Понедельник'
+      }
     }
   },
   watch: {
@@ -106,38 +167,60 @@ export default {
       })
       )
     } else {
-      let curDate = this.selectedDate.toISOString()
+      this.selectedDate = new Date(this.$store.getters['data/lastSelectedDate'])
+      let curDate = this.getLocalDateString(this.selectedDate)
+      this.customSelectDate = curDate
       LessonDateService.get(null, {
         schId: this.id,
-        date: curDate.slice(0, curDate.indexOf('T')),
+        date: curDate,
         count: 1
       }).then(lessons => {
         this.lessons = lessons
+      }, _ => {
+        this.$router.push('/')
       })
     }
   },
   methods: {
+    getLocalDateString (date) {
+      let dateString = date.toISOString()
+      return dateString.slice(0, dateString.indexOf('T'))
+    },
     prevDay () {
-      let date = new Date(this.selectedDate.valueOf())
+      let date = new Date(this.getCurrentDate)
+      let curDateString = this.getCurrentDate
       date.setDate(date.getDate() - 1)
-      this.selectedDate = date
-      this.getLessons()
+      if (curDateString !== this.currentSchedule.start) {
+        this.selectedDate = date
+        this.customSelectDate = this.getLocalDateString(date)
+        this.$store.dispatch('data/setLastSelectedDate', this.customSelectDate)
+        this.getLessons()
+      }
     },
     nextDay () {
-      let date = new Date(this.selectedDate.valueOf())
+      let date = new Date(this.getCurrentDate)
+      let curDateString = this.getCurrentDate
       date.setDate(date.getDate() + 1)
-      this.selectedDate = date
-      this.getLessons()
+      if (curDateString !== this.currentSchedule.stop) {
+        this.selectedDate = date
+        this.customSelectDate = this.getLocalDateString(date)
+        this.$store.dispatch('data/setLastSelectedDate', this.customSelectDate)
+        this.getLessons()
+      }
     },
     getLessons () {
-      let curDate = this.selectedDate.toISOString()
+      let curDate = this.getCurrentDate
       LessonDateService.get(null, {
         schId: this.id,
-        date: curDate.slice(0, curDate.indexOf('T')),
+        date: curDate,
         count: 1
       }).then(lessons => {
         this.lessons = lessons
       })
+    },
+    updateDatesAndLessons () {
+      this.$store.dispatch('data/setLastSelectedDate', this.customSelectDate)
+      this.getLessons()
     }
   }
 }
